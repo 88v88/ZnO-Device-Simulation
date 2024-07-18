@@ -118,6 +118,116 @@ add_bulk_reaction plasma_model=plasma name=2_28 \
     rate_coefficient_type=arrhenius \
     a=5.005e-11 b=0.5060 c=2.455e5 energy_transfer=21.4<eV>
 
+add_bulk_reaction plasma_model=plasma name=2_29 \
+    expression="e- + CF3 = F+ + CF2 + 2e-" \
+    rate_coefficient_type=arrhenius \
+    a=5.581e-10 b=0.2896 c=3.336e5 energy_transfer=21.3<eV>
+
+add_bulk_reaction plasma_model=plasma name=2_30 \
+    expression="e- + CF3 = CF2 + F-" \
+    rate_coefficient_type=arrhenius \
+    a=2.369e-8 b=-0.4893 c=5.876e4 energy_transfer=0.40<eV>
+
+add_bulk_reaction plasma_model=plasma name=2_31 \
+    expression="e- + CF2 = CF2 + e-" \
+    rate_coefficient_type=arrhenius \
+    a=3.419e-4 b=-0.8606 c=9.01e4 energy_transfer=5.6<eV>
+
+add_bulk_reaction plasma_model=plasma name=2_32 \
+    expression="e- + CF2 = CF2 + e-" \
+    rate_coefficient_type=arrhenius \
+    a=1.795e-4 b=-0.838 c=4.225e4 energy_transfer=2.2<eV>
+
+add_bulk_reaction plasma_model=plasma name=2_33 \
+    expression="e- + CF2 = CF + F + e-" \
+    rate_coefficient_type=arrhenius \
+    a=1.190e-16 b=1.309 c=1.446e5 energy_transfer=5.4<eV>
+
+add_bulk_reaction plasma_model=plasma name=2_34 \
+    expression="e- + CF2 = CF2+ + 2e-" \
+    rate_coefficient_type=arrhenius \
+    a=1.579e-11 b=0.6287 c=1.125e5 energy_transfer=10.0<eV>
+
+add_bulk_reaction plasma_model=plasma name=2_35 \
+    expression="e- + CF2 = CF+ + F + 2e-" \
+    rate_coefficient_type=arrhenius \
+    a=2.454e-12 b=0.7803 c=1.602e5 energy_transfer=14.23<eV>
+
+add_bulk_reaction plasma_model=plasma name=2_36 \
+    expression="e- + CF2 = F+ + CF + 2e-" \
+    rate_coefficient_type=arrhenius \
+    a=1.676e-9 b=0.2519 c=4.446e5 energy_transfer=22.9<eV>
+
+add_bulk_reaction plasma_model=plasma name=2_37 \
+    expression="e- + CF2 = CF + F-" \
+    rate_coefficient_type=arrhenius \
+    a=2.369e-8 b=-0.4893 c=5.876e4 energy_transfer=1.9<eV>
+
+add_bulk_reaction plasma_model=plasma name=2_38 \
+    expression="e- + CF = C + F + e-" \
+    rate_coefficient_type=arrhenius \
+    a=1.190e-16 b=1.309 c=1.446e5 energy_transfer=5.6<eV>
+
+add_bulk_reaction plasma_model=plasma name=2_39 \
+    expression="e- + CF = CF+ + 2e-" \
+    rate_coefficient_type=arrhenius \
+    a=1.270e-13 b=1.038 c=1.027e5 energy_transfer=9.11<eV>
+
+add_bulk_reaction plasma_model=plasma name=2_40 \
+    expression="e- + CF = C + F-" \
+    rate_coefficient_type=arrhenius \
+    a=2.369e-8 b=-0.4893 c=5.876e4 energy_transfer=2.1<eV>
+
+add_bulk_reaction plasma_model=plasma name=2_41 \
+    expression="e- + C = C + e-" \
+    rate_coefficient_type=arrhenius \
+    a=4.882e-6 b=-0.5042 c=2.459e4 energy_transfer=1.264<eV>
+
+add_bulk_reaction plasma_model=plasma name=2_42 \
+    expression="e- + C = C + e-" \
+    rate_coefficient_type=arrhenius \
+    a=6.939e-7 b=-0.5041 c=4.163e4 energy_transfer=2.684<eV>
+
+add_bulk_reaction plasma_model=plasma name=2_43 \
+    expression="e- + F = F + e-" \
+    rate_coefficient_type=arrhenius \
+    a=1.56e-6 b=-0.6504 c=1.66287e5 energy_transfer=12.7<eV>
+
+add_bulk_reaction plasma_model=plasma name=2_44 \
+    expression="e- + F = F + e-" \
+    rate_coefficient_type=arrhenius \
+    a=5.93e-9 b=-0.0528 c=1.60465e5 energy_transfer=12.985<eV>
+
+add_bulk_reaction plasma_model=plasma name=2_45 \
+    expression="e- + F = F+ + 2e-" \
+    rate_coefficient_type=arrhenius \
+    a=7.489e-13 b=0.8595 c=2.042e5 energy_transfer=17.42<eV>
+
+add_bulk_reaction plasma_model=plasma name=2_46 \
+    expression="e- + SiF4 = SiF4 + e-" \
+    rate_coefficient_type=arrhenius \
+    a=4.78e-3 b=-1.351 c=4.704e3 energy_transfer=0.032<eV>
+
+add_bulk_reaction plasma_model=plasma name=2_47 \
+    expression="e- + SiF4 = SiF4 + e-" \
+    rate_coefficient_type=arrhenius \
+    a=4.73e-3 b=-1.350 c=4.799e3 energy_transfer=0.052<eV>
+
+add_bulk_reaction plasma_model=plasma name=2_48 \
+    expression="e- + SiF4 = SiF4 + e-" \
+    rate_coefficient_type=arrhenius \
+    a=2.947e-6 b=-0.4119 c=4.606e3 energy_transfer=0.10<eV>
+
+add_bulk_reaction plasma_model=plasma name=2_49 \
+    expression="e- + SiF4 = SiF3 + F + e-" \
+    rate_coefficient_type=arrhenius \
+    a=2.268e-12 b=-0.8182 c=1.302e5 energy_transfer=7.25<eV>
+
+add_bulk_reaction plasma_model=plasma name=2_50 \
+    expression="e- + SiF4 = SiF2 + 2F + e-" \
+    rate_coefficient_type=arrhenius \
+    a=1.223e-8 b=0.01834 c=1.86e5 energy_transfer=11.9<eV>
+
 # Bulk reactions - Table 9
 add_bulk_reaction plasma_model=plasma name=9_1 \
     expression="e- + CHF3 = CHF3 + e-" \
