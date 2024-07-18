@@ -17,14 +17,24 @@ Example: `$ ssh -X andrew@ece007.ece.local.cmu.edu`
 1. Run `swb` in your project directory:
 `$ swb`
 2. When prompted to *Choose STDB Directory,* enter your full project directory into *Selection*.
+<img width="380" alt="image" src="https://github.com/user-attachments/assets/35b0126d-e6fc-4fa9-8234-5506dd916718">
+
 3. Create a new project in the directory. For example, navigate to the menu on the top toolbar **Project > New > Traditional Project**.
 4. Save the project through the menu **Project > Save** and enter the name of the project directory followed by the project name into *Selection* then click *OK*. This specific project will be stored in the new directory. Example: `/afs/andrew.cmu.edu/usr20/andrew/my_projects/this_project`
+<img width="282" alt="image" src="https://github.com/user-attachments/assets/c20b8170-8f1f-465c-af76-2da755843e3e">
+
 5. Under the *Project* tab, the first row of the spreadsheet shows *No Tools*. Right click on *No Tools* and click *Add* to add a tool, which brings up the *Add Tool* window.
-6. Under the dropdown menu, choose a tool such as `sprocess` for Sentaurus Process or `sptopo3d` for Sentaurus Topography 3D. Modify the input and output file names and parallelization settings if desired. 
+<img width="572" alt="image" src="https://github.com/user-attachments/assets/a0e92e31-d8ab-41e3-8fc5-4e494d0d9e07">
+
+6. Under the dropdown menu *Name*, choose a tool such as `sprocess` for Sentaurus Process or `sptopo3d` for Sentaurus Topography 3D. Modify the input and output file names and parallelization settings if desired. 
 7. Click *OK*, then save the project to add the input and output files which are stored inside your project directory.
 8. Navigate to your project directory and edit the input files pertaining to your specific simulation, especially the `.cmd` file that defines the simulation setup and steps.
 9. Run the simulation. For example, use the menu **Project > Operations > Run**. While the project is running, the standard output is written to the output file with the extension `.out` which includes errors and estimated remaining time until completion. 
-10. Add variables, parameters, and experiments by right clicking the spreadsheet under the *Project* tab so that several simulations using preset parameters can automatically be scheduled together.
+<img width="341" alt="image" src="https://github.com/user-attachments/assets/316ba5e0-c028-4884-8a38-2893c9e4c44a">
+
+10. Add variables by right clicking the spreadsheet at the top bar, and add parameter sweeps through the menu **Parameter > Add Parameters/Values** and entering a variable name and space-delimited values. 
+<img width="475" alt="image" src="https://github.com/user-attachments/assets/7dbcd5e4-b243-439b-be77-9dd9850fbcea">
+
 
 ## Sentaurus Visual
 1. After running your simulation, run `svisual` to visualize the results using Sentaurus Visual:
