@@ -1,9 +1,8 @@
-# CF4 etch only
-
+# Plasma model for CF4 etch
 # Define plasma model
 define_plasma_model name=plasma bulk_model_type=global sheath_model_type=circuit
 
-# CF4 Species
+# CF4 & Ar Species
 add_species plasma_model=plasma name=CF4   mass=88.003<amu>  charge=0
 add_species plasma_model=plasma name=F2+   mass=37.996<amu>  charge=+1
 add_species plasma_model=plasma name=F2    mass=37.996<amu>  charge=0
@@ -20,75 +19,77 @@ add_species plasma_model=plasma name=CF    mass=31.009<amu> charge=0
 add_species plasma_model=plasma name=F+    mass=18.998<amu> charge=+1
 add_species plasma_model=plasma name=F     mass=18.998<amu> charge=0
 add_species plasma_model=plasma name=F-    mass=18.998<amu> charge=-1
+add_species plasma_model=plasma name=Ar     mass=39.948<amu> charge=0
+add_species plasma_model=plasma name=Ar+    mass=39.948<amu> charge=+1
 
-# CF4 Reactions from Tonelli et. al.
-# "A global model study of low pressure high density CF4 discharge"
-
-# TABLE 1 - CF4 electron collisions
+# References:
+# CF4 Reactions from Tonelli et. al. "A global model study of low pressure high density CF4 discharge"
+# Electron collision energy losses from Ho et. al. "Chemical reaction Mechanisms for Modeling the Fluorocarbon Plasma Etch of Silicon Oxide and Related Materials"
+# TABLE 1 - CF4 Electron Collisions
 add_bulk_reaction plasma_model=plasma name=1_5 \
     expression="e- + CF4 = CF3 + F + e-" \
     rate_coefficient_type=arrhenius \
-    a=1.369e-16 b=2.048 c=7.557 energy_transfer=0<eV>
+    a=1.369e-16 b=2.048 c=7.557 energy_transfer=5.6<eV>
 
 add_bulk_reaction plasma_model=plasma name=1_6 \
     expression="e- + CF4 = CF2 + 2F + e-" \
     rate_coefficient_type=arrhenius \
-    a=1.359e-18 b=1.693 c=13.104 energy_transfer=0<eV>
+    a=1.359e-18 b=1.693 c=13.104 energy_transfer=9.5<eV>
 
 add_bulk_reaction plasma_model=plasma name=1_7 \
     expression="e- + CF4 = CF + 3F + e-" \
     rate_coefficient_type=arrhenius \
-    a=7.215e-17 b=0.277 c=27.151 energy_transfer=0<eV>
+    a=7.215e-17 b=0.277 c=27.151 energy_transfer=14.9<eV>
 
 add_bulk_reaction plasma_model=plasma name=1_8 \
     expression="e- + CF4 = CF3+ + F + 2e-" \
     rate_coefficient_type=arrhenius \
-    a=1.083e-14 b=0.969 c=17.803 energy_transfer=0<eV>
+    a=1.083e-14 b=0.969 c=17.803 energy_transfer=15.9<eV>
 
 add_bulk_reaction plasma_model=plasma name=1_9 \
     expression="e- + CF4 = CF2+ + 2F + 2e-" \
     rate_coefficient_type=arrhenius \
-    a=3.310e-16 b=1.365 c=18.373 energy_transfer=0<eV>
+    a=3.310e-16 b=1.365 c=18.373 energy_transfer=22.0<eV>
 
 add_bulk_reaction plasma_model=plasma name=1_10 \
     expression="e- + CF4 = CF+ + 3F + 2e-" \
     rate_coefficient_type=arrhenius \
-    a=7.171e-19 b=3.453 c=14.244 energy_transfer=0<eV>
+    a=7.171e-19 b=3.453 c=14.244 energy_transfer=27.0<eV>
 
 add_bulk_reaction plasma_model=plasma name=1_11 \
     expression="e- + CF4 = CF3 + F+ + 2e-" \
     rate_coefficient_type=arrhenius \
-    a=1.297e-18 b=2.786 c=18.557 energy_transfer=0<eV>
+    a=1.297e-18 b=2.786 c=18.557 energy_transfer=23.1<eV>
 
 add_bulk_reaction plasma_model=plasma name=1_12 \
     expression="e- + CF4 = C+ + 4F + 2e-" \
     rate_coefficient_type=arrhenius \
-    a=9.154e-20 b=3.847 c=12.082 energy_transfer=0<eV>
+    a=9.154e-20 b=3.847 c=12.082 energy_transfer=32.0<eV> # estimated
 
 add_bulk_reaction plasma_model=plasma name=1_13 \
     expression="e- + CF4 = CF3+ + F+ + 3e-" \
     rate_coefficient_type=arrhenius \
-    a=5.611e-17 b=1.157 c=37.455 energy_transfer=0<eV>
+    a=5.611e-17 b=1.157 c=37.455 energy_transfer=36.0<eV>
 
 add_bulk_reaction plasma_model=plasma name=1_14 \
     expression="e- + CF4 = CF2+ + F+ + F + 3e-" \
     rate_coefficient_type=arrhenius \
-    a=8.207e-17 b=1.163 c=42.737 energy_transfer=0<eV>
+    a=8.207e-17 b=1.163 c=42.737 energy_transfer=40.0<eV>
 
 add_bulk_reaction plasma_model=plasma name=1_15 \
     expression="e- + CF4 = CF+ + F+ + 2F + 3e-" \
     rate_coefficient_type=arrhenius \
-    a=5.217e-17 b=1.520 c=47.145 energy_transfer=0<eV>
+    a=5.217e-17 b=1.520 c=47.145 energy_transfer=42.0<eV>
 
 add_bulk_reaction plasma_model=plasma name=1_16 \
     expression="e- + CF4 = C+ + F+ + 3F + 3e-" \
     rate_coefficient_type=arrhenius \
-    a=4.075e-17 b=1.353 c=61.618 energy_transfer=0<eV>
+    a=4.075e-17 b=1.353 c=61.618 energy_transfer=44.0<eV> # estimated
 
 add_bulk_reaction plasma_model=plasma name=1_17 \
     expression="e- + CF4 = CF3 + F-" \
     rate_coefficient_type=arrhenius \
-    a=1.086e-15 b=-1.336 c=6.691 energy_transfer=0<eV>
+    a=1.086e-15 b=-1.336 c=6.691 energy_transfer=3.0<eV>
 
 add_bulk_reaction plasma_model=plasma name=1_18 \
     expression="e- + CF4 = CF2 + F2-" \
@@ -130,80 +131,80 @@ add_bulk_reaction plasma_model=plasma name=1_25 \
     rate_coefficient_type=arrhenius \
     a=3.691e-19 b=0.051 c=10.163 energy_transfer=0<eV>
 
-# Table 2 - CF3 electron collisions
+# Table 2 - CF3 Electron Collisions
 add_bulk_reaction plasma_model=plasma name=2_27 \
     expression="e- + CF3 = CF2 + F + e-" \
     rate_coefficient_type=arrhenius \
-    a=3.257e-15 b=0.690 c=3.650 energy_transfer=0<eV>
+    a=3.257e-15 b=0.690 c=3.650 energy_transfer=3.8<eV>
 
 add_bulk_reaction plasma_model=plasma name=2_28 \
     expression="e- + CF3 = CF3+ + 2e-" \
     rate_coefficient_type=arrhenius \
-    a=1.427e-15 b=0.838 c=9.549 energy_transfer=0<eV>
+    a=1.427e-15 b=0.838 c=9.549 energy_transfer=10.0<eV>
 
 add_bulk_reaction plasma_model=plasma name=2_29 \
     expression="e- + CF3 = CF2+ + F + 2e-" \
     rate_coefficient_type=arrhenius \
-    a=8.362e-15 b=0.444 c=17.368 energy_transfer=0<eV>
+    a=8.362e-15 b=0.444 c=17.368 energy_transfer=17.1<eV>
 
 add_bulk_reaction plasma_model=plasma name=2_30 \
     expression="e- + CF3 = CF+ + 2F + 2e-" \
     rate_coefficient_type=arrhenius \
-    a=5.257e-15 b=0.555 c=21.232 energy_transfer=0<eV>
+    a=5.257e-15 b=0.555 c=21.232 energy_transfer=21.4<eV>
 
 add_bulk_reaction plasma_model=plasma name=2_31 \
     expression="e- + CF3 = CF2 + F+ + 2e-" \
     rate_coefficient_type=arrhenius \
-    a=2.669e-15 b=0.820 c=27.018 energy_transfer=0<eV>
+    a=2.669e-15 b=0.820 c=27.018 energy_transfer=21.3<eV>
 
 add_bulk_reaction plasma_model=plasma name=2_32 \
     expression="e- + CF3 = CF2 + F-" \
     rate_coefficient_type=arrhenius \
-    a=1.402e-12 b=-1.408 c=0.013 energy_transfer=0<eV>
+    a=1.402e-12 b=-1.408 c=0.013 energy_transfer=0.40<eV>
 
-# Table 3 - CF2 electron collisions
+# Table 3 - CF2 Electron Collisions
 add_bulk_reaction plasma_model=plasma name=3_36 \
     expression="e- + CF2 = CF + F + e-" \
     rate_coefficient_type=arrhenius \
-    a=3.257e-15 b=0.690 c=5.390 energy_transfer=0<eV>
+    a=3.257e-15 b=0.690 c=5.390 energy_transfer=5.4<eV>
 
 add_bulk_reaction plasma_model=plasma name=3_37 \
     expression="e- + CF2 = CF2+ + 2e-" \
     rate_coefficient_type=arrhenius \
-    a=4.330e-15 b=0.775 c=9.485 energy_transfer=0<eV>
+    a=4.330e-15 b=0.775 c=9.485 energy_transfer=10.0<eV>
 
 add_bulk_reaction plasma_model=plasma name=3_38 \
     expression="e- + CF2 = CF+ + F + 2e-" \
     rate_coefficient_type=arrhenius \
-    a=6.032e-15 b=0.497 c=14.539 energy_transfer=0<eV>
+    a=6.032e-15 b=0.497 c=14.539 energy_transfer=14.23<eV>
 
 add_bulk_reaction plasma_model=plasma name=3_39 \
     expression="e- + CF2 = CF+ + F+ + 3e-" \
     rate_coefficient_type=arrhenius \
-    a=3.176e-14 b=-0.111 c=31.314 energy_transfer=0<eV>
+    a=3.176e-14 b=-0.111 c=31.314 energy_transfer=25.0<eV> # estimated
 
 add_bulk_reaction plasma_model=plasma name=3_40 \
     expression="e- + CF2 = CF + F+ + 2e-" \
     rate_coefficient_type=arrhenius \
-    a=1.588e-14 b=-0.111 c=31.314 energy_transfer=0<eV>
+    a=1.588e-14 b=-0.111 c=31.314 energy_transfer=22.9<eV>
 
-# Table 5 - CF electron collisions
+# Table 5 - CF Electron Collisions
 add_bulk_reaction plasma_model=plasma name=5_50 \
     expression="e- + CF = C + F + e-" \
     rate_coefficient_type=arrhenius \
-    a=5.633e-14 b=-1.318 c=7.158 energy_transfer=0<eV>
+    a=5.633e-14 b=-1.318 c=7.158 energy_transfer=5.6<eV>
 
 add_bulk_reaction plasma_model=plasma name=5_50 \
     expression="e- + CF = CF+ + 2e-" \
     rate_coefficient_type=arrhenius \
-    a=4.295e-15 b=0.800 c=11.541 energy_transfer=0<eV>
+    a=4.295e-15 b=0.800 c=11.541 energy_transfer=9.11<eV>
 
 add_bulk_reaction plasma_model=plasma name=5_50 \
     expression="e- + CF = C + F+ + 2e-" \
     rate_coefficient_type=arrhenius \
-    a=1.985e-14 b=-0.111 c=31.314 energy_transfer=0<eV>
+    a=1.985e-14 b=-0.111 c=31.314 energy_transfer=9.0<eV> # estimated
 
-# Table 7, 8, 9 - F2, F, C
+# Table 7, 8, 9 - F2, F, C Electron Collisions
 add_bulk_reaction plasma_model=plasma name=7_59 \
     expression="e- + F2 = 2F + e-" \
     rate_coefficient_type=arrhenius \
@@ -227,14 +228,14 @@ add_bulk_reaction plasma_model=plasma name=7_64 \
 add_bulk_reaction plasma_model=plasma name=8_91 \
     expression="e- + F = F+ + 2e-" \
     rate_coefficient_type=arrhenius \
-    a=4.711e-16 b=1.411 c=12.618 energy_transfer=0<eV>
+    a=4.711e-16 b=1.411 c=12.618 energy_transfer=17.42<eV>
 
 add_bulk_reaction plasma_model=plasma name=9_120 \
     expression="e- + C = C+ + 2e-" \
     rate_coefficient_type=arrhenius \
     a=3.692e-15 b=1.182 c=9.332 energy_transfer=0<eV>
 
-# Table 10 - Ion electron collisions
+# Table 10 - Ion Electron Collisions
 add_bulk_reaction plasma_model=plasma name=10_121 \
     expression="e- + CF3+ = CF3" \
     rate_coefficient_type=arrhenius \
@@ -295,7 +296,7 @@ add_bulk_reaction plasma_model=plasma name=10_132 \
     rate_coefficient_type=arrhenius \
     a=3.047e-14 b=0.413 c=11.167 energy_transfer=0<eV>
 
-# Table 12 - Charge exchange
+# Table 12 - Charge Exchange
 add_bulk_reaction plasma_model=plasma name=12_145 \
     expression="CF2+ + CF4 = CF3+ + CF3" \
     rate_coefficient_type=arrhenius \
@@ -431,7 +432,7 @@ add_bulk_reaction plasma_model=plasma name=12_171 \
     rate_coefficient_type=arrhenius \
     a=5.00e-15 b=0 c=0 energy_transfer=0<eV>
 
-# Table 13 - electron detachment
+# Table 13 - Electron Detachment
 add_bulk_reaction plasma_model=plasma name=13_172 \
     expression="F- + CF4 = CF4 + F + e-" \
     rate_coefficient_type=arrhenius \
@@ -563,12 +564,60 @@ add_bulk_reaction plasma_model=plasma name=14_197 \
     rate_coefficient_type=arrhenius \
     a=1e-13 b=0 c=0 energy_transfer=0<eV>
 
+# Argon Ionization
+add_bulk_reaction plasma_model=plasma name=14_197 \
+    expression="Ar + e- = Ar+ + 2e-" \
+    rate_coefficient_type=arrhenius \
+    a=2.3e-14 b=0.6329 c=16.0627 energy_transfer=15.76<eV>
+
 # Solve for species flux distributions in plasma
 define_reactor name=chamber plasma_model=plasma \
     type=icp radius=12<cm> height=10<cm> \
     power=500<W> pressure=10<mTorr> gas_temperature=400<K> \
     rf_bias_frequency=13.6<MHz> rf_bias_power=20<W> \
-    inlet_gas_flow= {{CF4 20<sccm>}} 
+    inlet_gas_flow= {{CF4 20<sccm>} {Ar 5<sccm>}} 
 define_bulk_solver name=bulk_solver bulk_model_type=global \
-    max_time=180<s> stationary_state_tolerance=8e-3 step_size=1e-4
+    max_time=180<s> stationary_state_tolerance=1e-3 step_size=1e-4
 solve_reactor name=plasma_sol reactor=chamber bulk_solver=bulk_solver
+
+# Reactive species distributions to reaction model
+define_species_distribution type=plasma solution=plasma_sol name=F+ species=F+ 
+define_species_distribution type=plasma solution=plasma_sol name=F species=F
+define_species_distribution type=plasma solution=plasma_sol name=F- species=F-
+define_species_distribution type=sum name=F_all species=F \
+    distributions= {{F+ F+} {F F} {F- F-}}
+
+define_species_distribution type=plasma solution=plasma_sol name=CF+ species=CF+
+define_species_distribution type=plasma solution=plasma_sol name=CF species=CF  
+define_species_distribution type=sum name=CF_all species=CF \
+    distributions= {{CF+ CF+} {CF CF}}
+
+define_species_distribution type=plasma solution=plasma_sol name=CF2+ species=CF2+
+define_species_distribution type=plasma solution=plasma_sol name=CF2 species=CF2  
+define_species_distribution type=sum name=CF2_all species=CF2 \
+    distributions= {{CF2+ CF2+} {CF2 CF2}}
+
+define_species_distribution type=plasma solution=plasma_sol name=CF3+ species=CF3+
+define_species_distribution type=plasma solution=plasma_sol name=CF3 species=CF3  
+define_species_distribution type=plasma solution=plasma_sol name=CF3- species=CF3- 
+define_species_distribution type=sum name=CF3_all species=CF3 \
+    distributions= {{CF3+ CF3+} {CF3 CF3} {CF3- CF3-}}
+
+# Other species (sputtered)
+define_species_distribution type=plasma solution=plasma_sol name=F2+ species=F2+
+define_species_distribution type=plasma solution=plasma_sol name=F2 species=F2 
+define_species_distribution type=plasma solution=plasma_sol name=F2- species=F2-
+define_species_distribution type=plasma solution=plasma_sol name=C+ species=C+
+define_species_distribution type=plasma solution=plasma_sol name=C species=C 
+define_species_distribution type=plasma solution=plasma_sol name=Ar+ species=Ar+
+define_species_distribution type=plasma solution=plasma_sol name=Ar species=Ar  
+define_species_distribution type=plasma solution=plasma_sol name=CF4 species=CF4 
+define_species_distribution type=sum name=nonreactive species=X \
+    distributions= {{F2+ F2+} {F2 F2} {F2- F2-} {C+ C+} {C C} {Ar+ Ar+} {Ar Ar} {CF4 CF4}}
+
+# Save species distributions
+save species_distribution=F_all species=F file_type=text file=f_sd.txt
+save species_distribution=CF_all species=CF file_type=text file=cf_sd.txt
+save species_distribution=CF2_all species=CF2 file_type=text file=cf2_sd.txt
+save species_distribution=CF3_all species=CF3 file_type=text file=cf3_sd.txt
+save species_distribution=nonreactive species=X file_type=text file=nr_sd.txt
