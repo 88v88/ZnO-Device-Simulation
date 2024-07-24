@@ -1,4 +1,14 @@
-# Plasma model for CF4 etch
+# Plasma model for CF4/Ar ICP/RIE etch
+# References:
+# CF4 Reactions from Tonelli et. al. "A global model study of low pressure high density CF4 discharge"
+# Electron collision energy losses from Ho et. al. "Chemical reaction Mechanisms for Modeling the Fluorocarbon Plasma Etch of Silicon Oxide and Related Materials"
+
+set F_SD_PATH f_sd.txt
+set CF_SD_PATH cf_sd.txt
+set CF2_SD_PATH cf2_sd.txt
+set CF3_SD_PATH cf3_sd.txt
+set X_SD_PATH x_sd.txt
+
 # Define plasma model
 define_plasma_model name=plasma bulk_model_type=global sheath_model_type=circuit
 
@@ -21,10 +31,6 @@ add_species plasma_model=plasma name=F     mass=18.998<amu> charge=0
 add_species plasma_model=plasma name=F-    mass=18.998<amu> charge=-1
 add_species plasma_model=plasma name=Ar     mass=39.948<amu> charge=0
 add_species plasma_model=plasma name=Ar+    mass=39.948<amu> charge=+1
-
-# References:
-# CF4 Reactions from Tonelli et. al. "A global model study of low pressure high density CF4 discharge"
-# Electron collision energy losses from Ho et. al. "Chemical reaction Mechanisms for Modeling the Fluorocarbon Plasma Etch of Silicon Oxide and Related Materials"
 
 # TABLE 1 - CF4 Electron Collisions
 add_bulk_reaction plasma_model=plasma name=1_5 \
@@ -585,28 +591,28 @@ solve_reactor name=plasma_sol reactor=chamber bulk_solver=bulk_solver
 define_species_distribution type=plasma solution=plasma_sol name=F+ species=F+ 
 define_species_distribution type=plasma solution=plasma_sol name=F species=F
 define_species_distribution type=plasma solution=plasma_sol name=F- species=F-
-define_species_distribution type=sum \
-    name=F_all species=F distributions= {{F+ F+} {F F} {F- F-}}
-save species_distribution=F_all species=F file_type=text file=f_sd.txt
+define_species_distribution type=sum name=F_all species=F \
+    distributions= {{F+ F+} {F F} {F- F-}}
+save species_distribution=F_all species=F file_type=text file=F_SD_PATH
 
 define_species_distribution type=plasma solution=plasma_sol name=CF+ species=CF+
 define_species_distribution type=plasma solution=plasma_sol name=CF  species=CF  
-define_species_distribution type=sum \
-    name=CF_all species=CF distributions= {{CF+ CF+} {CF CF}}
-save species_distribution=CF_all species=CF file_type=text file=cf_sd.txt
+define_species_distribution type=sum name=CF_all species=CF \
+    distributions= {{CF+ CF+} {CF CF}}
+save species_distribution=CF_all species=CF file_type=text file=CF_SD_PATH
 
 define_species_distribution type=plasma solution=plasma_sol name=CF2+ species=CF2+
 define_species_distribution type=plasma solution=plasma_sol name=CF2  species=CF2  
-define_species_distribution type=sum \
-    name=CF2_all species=CF2 distributions= {{CF2+ CF2+} {CF2 CF2}}
-save species_distribution=CF2_all species=CF2 file_type=text file=cf2_sd.txt
+define_species_distribution type=sum name=CF2_all species=CF2 \
+    distributions= {{CF2+ CF2+} {CF2 CF2}}
+save species_distribution=CF2_all species=CF2 file_type=text file=CF2_SD_PATH
 
 define_species_distribution type=plasma solution=plasma_sol name=CF3+ species=CF3+
 define_species_distribution type=plasma solution=plasma_sol name=CF3  species=CF3  
 define_species_distribution type=plasma solution=plasma_sol name=CF3- species=CF3- 
-define_species_distribution type=sum \
-    name=CF3_all species=CF3 distributions= {{CF3+ CF3+} {CF3 CF3} {CF3- CF3-}}
-save species_distribution=CF3_all species=CF3 file_type=text file=cf3_sd.txt
+define_species_distribution type=sum name=CF3_all species=CF3 \
+    distributions= {{CF3+ CF3+} {CF3 CF3} {CF3- CF3-}}
+save species_distribution=CF3_all species=CF3 file_type=text file=CF3_SD_PATH
 
 # Other species (sputtered)
 define_species_distribution type=plasma solution=plasma_sol name=F2+ species=F2+
@@ -619,4 +625,4 @@ define_species_distribution type=plasma solution=plasma_sol name=Ar species=Ar
 define_species_distribution type=plasma solution=plasma_sol name=CF4 species=CF4 
 define_species_distribution type=sum name=nonreactive species=X \
     distributions= {{F2+ F2+} {F2 F2} {F2- F2-} {C+ C+} {C C} {Ar+ Ar+} {Ar Ar} {CF4 CF4}}
-save species_distribution=nonreactive species=X file_type=text file=nr_sd.txt
+save species_distribution=nonreactive species=X file_type=text file=NR_SD_PATH
