@@ -25,6 +25,7 @@ add_species plasma_model=plasma name=Ar+    mass=39.948<amu> charge=+1
 # References:
 # CF4 Reactions from Tonelli et. al. "A global model study of low pressure high density CF4 discharge"
 # Electron collision energy losses from Ho et. al. "Chemical reaction Mechanisms for Modeling the Fluorocarbon Plasma Etch of Silicon Oxide and Related Materials"
+
 # TABLE 1 - CF4 Electron Collisions
 add_bulk_reaction plasma_model=plasma name=1_5 \
     expression="e- + CF4 = CF3 + F + e-" \
@@ -194,12 +195,12 @@ add_bulk_reaction plasma_model=plasma name=5_50 \
     rate_coefficient_type=arrhenius \
     a=5.633e-14 b=-1.318 c=7.158 energy_transfer=5.6<eV>
 
-add_bulk_reaction plasma_model=plasma name=5_50 \
+add_bulk_reaction plasma_model=plasma name=5_51 \
     expression="e- + CF = CF+ + 2e-" \
     rate_coefficient_type=arrhenius \
     a=4.295e-15 b=0.800 c=11.541 energy_transfer=9.11<eV>
 
-add_bulk_reaction plasma_model=plasma name=5_50 \
+add_bulk_reaction plasma_model=plasma name=5_52 \
     expression="e- + CF = C + F+ + 2e-" \
     rate_coefficient_type=arrhenius \
     a=1.985e-14 b=-0.111 c=31.314 energy_transfer=9.0<eV> # estimated
@@ -308,7 +309,7 @@ add_bulk_reaction plasma_model=plasma name=12_146 \
     a=1.48e-15 b=0 c=0 energy_transfer=0<eV>
 
 add_bulk_reaction plasma_model=plasma name=12_147 \
-    expression="CF2+ + C = CF+ + CF" \
+    expression="CF2+ + C = CF3+ + C" \
     rate_coefficient_type=arrhenius \
     a=2.06e-15 b=0 c=0 energy_transfer=0<eV>
 
@@ -565,7 +566,7 @@ add_bulk_reaction plasma_model=plasma name=14_197 \
     a=1e-13 b=0 c=0 energy_transfer=0<eV>
 
 # Argon Ionization
-add_bulk_reaction plasma_model=plasma name=14_197 \
+add_bulk_reaction plasma_model=plasma name=ar_ion \
     expression="Ar + e- = Ar+ + 2e-" \
     rate_coefficient_type=arrhenius \
     a=2.3e-14 b=0.6329 c=16.0627 energy_transfer=15.76<eV>
@@ -584,24 +585,28 @@ solve_reactor name=plasma_sol reactor=chamber bulk_solver=bulk_solver
 define_species_distribution type=plasma solution=plasma_sol name=F+ species=F+ 
 define_species_distribution type=plasma solution=plasma_sol name=F species=F
 define_species_distribution type=plasma solution=plasma_sol name=F- species=F-
-define_species_distribution type=sum name=F_all species=F \
-    distributions= {{F+ F+} {F F} {F- F-}}
+define_species_distribution type=sum \
+    name=F_all species=F distributions= {{F+ F+} {F F} {F- F-}}
+save species_distribution=F_all species=F file_type=text file=f_sd.txt
 
 define_species_distribution type=plasma solution=plasma_sol name=CF+ species=CF+
-define_species_distribution type=plasma solution=plasma_sol name=CF species=CF  
-define_species_distribution type=sum name=CF_all species=CF \
-    distributions= {{CF+ CF+} {CF CF}}
+define_species_distribution type=plasma solution=plasma_sol name=CF  species=CF  
+define_species_distribution type=sum \
+    name=CF_all species=CF distributions= {{CF+ CF+} {CF CF}}
+save species_distribution=CF_all species=CF file_type=text file=cf_sd.txt
 
 define_species_distribution type=plasma solution=plasma_sol name=CF2+ species=CF2+
-define_species_distribution type=plasma solution=plasma_sol name=CF2 species=CF2  
-define_species_distribution type=sum name=CF2_all species=CF2 \
-    distributions= {{CF2+ CF2+} {CF2 CF2}}
+define_species_distribution type=plasma solution=plasma_sol name=CF2  species=CF2  
+define_species_distribution type=sum \
+    name=CF2_all species=CF2 distributions= {{CF2+ CF2+} {CF2 CF2}}
+save species_distribution=CF2_all species=CF2 file_type=text file=cf2_sd.txt
 
 define_species_distribution type=plasma solution=plasma_sol name=CF3+ species=CF3+
-define_species_distribution type=plasma solution=plasma_sol name=CF3 species=CF3  
+define_species_distribution type=plasma solution=plasma_sol name=CF3  species=CF3  
 define_species_distribution type=plasma solution=plasma_sol name=CF3- species=CF3- 
-define_species_distribution type=sum name=CF3_all species=CF3 \
-    distributions= {{CF3+ CF3+} {CF3 CF3} {CF3- CF3-}}
+define_species_distribution type=sum \
+    name=CF3_all species=CF3 distributions= {{CF3+ CF3+} {CF3 CF3} {CF3- CF3-}}
+save species_distribution=CF3_all species=CF3 file_type=text file=cf3_sd.txt
 
 # Other species (sputtered)
 define_species_distribution type=plasma solution=plasma_sol name=F2+ species=F2+
@@ -614,10 +619,4 @@ define_species_distribution type=plasma solution=plasma_sol name=Ar species=Ar
 define_species_distribution type=plasma solution=plasma_sol name=CF4 species=CF4 
 define_species_distribution type=sum name=nonreactive species=X \
     distributions= {{F2+ F2+} {F2 F2} {F2- F2-} {C+ C+} {C C} {Ar+ Ar+} {Ar Ar} {CF4 CF4}}
-
-# Save species distributions
-save species_distribution=F_all species=F file_type=text file=f_sd.txt
-save species_distribution=CF_all species=CF file_type=text file=cf_sd.txt
-save species_distribution=CF2_all species=CF2 file_type=text file=cf2_sd.txt
-save species_distribution=CF3_all species=CF3 file_type=text file=cf3_sd.txt
 save species_distribution=nonreactive species=X file_type=text file=nr_sd.txt
