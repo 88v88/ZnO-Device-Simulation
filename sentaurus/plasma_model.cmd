@@ -1,16 +1,43 @@
-# Plasma model for CF4/Ar ICP/RIE etch
+# Plasma model for CF4/Ar/CHF3 ICP/RIE etch
 # References:
-# CF4 Reactions from Tonelli et. al. "A global model study of low pressure high density CF4 discharge"
-# Electron collision energy losses from Ho et. al. "Chemical reaction Mechanisms for Modeling the Fluorocarbon Plasma Etch of Silicon Oxide and Related Materials"
+# CF4 Reactions from Tonelli et. al. 
+# "A global model study of low pressure high density CF4 discharge"
+#  CHF3 Reactions & all electron collision energy losses from Ho et. al. 
+# "Chemical reaction Mechanisms for Modeling the Fluorocarbon
+#  Plasma Etch of Silicon Oxide and Related Materials"
 
+# Etcher settings
+set RF_POWER_W 200
+set PRESSURE_MTORR 10
+set CF4_SCCM 20
+set AR_SCCM 5
+set CHF3_SCCM 5
+set GAS_FLOWS [list [list "CF4 $CF4_SCCM<sccm>"] \
+    [list "Ar $AR_SCCM<sccm>"] \
+    [list "CHF3 $CHF3_SCCM<sccm>"]]
+
+# Miscellaneous etcher settings
+set CHAMBER_RADIUS_CM 12
+set CHAMBER_HEIGHT_CM 10
+set GAS_TEMP_K 400
+set PLASMA_TOLERANCE 1e-3
+set PLASMA_STEP_SIZE 1e-4
+set MAX_SOLVER_SEC 180
+
+# Species distribution paths
 set F_SD_PATH f_sd.txt
 set CF_SD_PATH cf_sd.txt
 set CF2_SD_PATH cf2_sd.txt
 set CF3_SD_PATH cf3_sd.txt
-set X_SD_PATH x_sd.txt
+set CHF_SD_PATH chf_sd.txt
+set CHF2_SD_PATH chf2_sd.txt
+set H_SD_PATH h_sd.txt
+set H2_SD_PATH H2_sd.txt
+set AR_SD_PATH ar_sd.txt
 
 # Define plasma model
-define_plasma_model name=plasma bulk_model_type=global sheath_model_type=circuit
+define_plasma_model name=plasma \
+    bulk_model_type=global sheath_model_type=circuit
 
 # CF4 & Ar Species
 add_species plasma_model=plasma name=CF4   mass=88.003<amu>  charge=0
@@ -29,8 +56,161 @@ add_species plasma_model=plasma name=CF    mass=31.009<amu> charge=0
 add_species plasma_model=plasma name=F+    mass=18.998<amu> charge=+1
 add_species plasma_model=plasma name=F     mass=18.998<amu> charge=0
 add_species plasma_model=plasma name=F-    mass=18.998<amu> charge=-1
-add_species plasma_model=plasma name=Ar     mass=39.948<amu> charge=0
-add_species plasma_model=plasma name=Ar+    mass=39.948<amu> charge=+1
+add_species plasma_model=plasma name=Ar    mass=39.948<amu> charge=0
+add_species plasma_model=plasma name=Ar+   mass=39.948<amu> charge=+1
+
+# CHF3 Species
+add_species plasma_model=plasma name=CHF3  mass=70.0128<amu>  charge=0
+add_species plasma_model=plasma name=CHF2+ mass=51.0148<amu>  charge=+1
+add_species plasma_model=plasma name=CHF2  mass=51.0148<amu>  charge=0
+add_species plasma_model=plasma name=CHF+  mass=32.0168<amu>  charge=+1
+add_species plasma_model=plasma name=CHF   mass=32.0168<amu>  charge=0
+add_species plasma_model=plasma name=HF    mass=20.0058<amu>  charge=0
+add_species plasma_model=plasma name=H2+   mass=2.0156<amu>   charge=+1
+add_species plasma_model=plasma name=H2    mass=2.0156<amu>   charge=0
+add_species plasma_model=plasma name=H+    mass=1.0078<amu>   charge=+1
+add_species plasma_model=plasma name=H     mass=1.0078<amu>   charge=0
+
+# TABLE 9a - Other CHF3 Reactions
+add_bulk_reaction plasma_model=plasma name=9_6 \
+    expression="e- + CHF3 = CF3+ + H + 2e-" \
+    rate_coefficient_type=arrhenius \
+    a=5.361e-21 b=1.4404 c=15.5106 energy_transfer=15.2<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_7 \
+    expression="e- + CHF3 = CHF2+ + F + 2e-" \
+    rate_coefficient_type=arrhenius \
+    a=2.225e-21 b=1.2886 c=16.424 energy_transfer=16.8<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_8 \
+    expression="e- + CHF3 = CF2+ + HF + 2e-" \
+    rate_coefficient_type=arrhenius \
+    a=6.533e-23 b=1.4404 c=15.5106 energy_transfer=17.6<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_9 \
+    expression="e- + CHF3 = CF+ + 2F = H + 2e-" \
+    rate_coefficient_type=arrhenius \
+    a=6.780e-22 b=1.5225 c=20.1207 energy_transfer=20.9<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_10 \
+    expression="e- + CHF3 = F= + CHF2 + 2e-" \
+    rate_coefficient_type=arrhenius \
+    a=8.120e-20 b=0.9194 c=36.8204 energy_transfer=37.0<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_11 \
+    expression="e- + CHF3 = CHF+ + 2F + 2e-" \
+    rate_coefficient_type=arrhenius \
+    a=1.006e-21 b=1.3223 c=18.2680 energy_transfer=19.8<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_12 \
+    expression="e- + CHF3 = CF3 + H = e-" \
+    rate_coefficient_type=arrhenius \
+    a=3.963e-23 b=1.6416 c=8.9961 energy_transfer=11.0<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_13 \
+    expression="e- + CHF3 = CHF2 + F + e-" \
+    rate_coefficient_type=arrhenius \
+    a=1.187e-22 b=1.3167 c=11.8570 energy_transfer=13.0<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_14 \
+    expression="e- + CHF3 = CF2 + HF + e-" \
+    rate_coefficient_type=arrhenius \
+    a=3.626-20 b=1.0759 c=22.6713 energy_transfer=23.6<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_15 \
+    expression="e- + CHF3 = CF3+ + H + 2e-" \
+    rate_coefficient_type=arrhenius \
+    a=8.084e-19 b=0.5725 c=35.0712 energy_transfer=35.0<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_16 \
+    expression="e- + CHF3 = CF + H + 2F = e-" \
+    rate_coefficient_type=arrhenius \
+    a=6.752e-15 b=0.1877 c=20.3189 energy_transfer=13.3<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_17 \
+    expression="e- + CHF3 = CF3 + H + e-" \
+    rate_coefficient_type=arrhenius \
+    a=2.555e-12 b=-0.4365 c=13.3219 energy_transfer=11.0<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_18_19 \
+    expression="e- + CHF3 = F- + CHF2" \
+    rate_coefficient_type=arrhenius \
+    a=9.1046e-11 b=-1.3618 c=9.7286 energy_transfer=1.3<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_20 \
+    expression="e- + CHF2 = CF2+ + H + 2e-" \
+    rate_coefficient_type=arrhenius \
+    a=5.361e-21 b=1.3438 c=14.9591 energy_transfer=17.2<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_21 \
+    expression="e- + CHF2 = CHF+ + F + 2e-" \
+    rate_coefficient_type=arrhenius \
+    a=2.225e-21 b=1.2886 c=16.4240 energy_transfer=14.3<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_22 \
+    expression="e- + CHF2 = CF+ + HF + 2e-" \
+    rate_coefficient_type=arrhenius \
+    a=6.533e-23 b=1.4404 c=15.5106 energy_transfer=14.6<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_23 \
+    expression="e- + CHF2 = CF2 + H + e-" \
+    rate_coefficient_type=arrhenius \
+    a=3.963e-23 b=1.6416 c=8.9961 energy_transfer=2.71<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_24 \
+    expression="e- + CHF2 = CHF + F + e-" \
+    rate_coefficient_type=arrhenius \
+    a=1.187e-22 b=1.3167 c=11.8570 energy_transfer=4.75<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_25 \
+    expression="e- + CHF2 = CF + H + F + e-" \
+    rate_coefficient_type=arrhenius \
+    a=3.626e-14 b=1.0759 c=22.6713 energy_transfer=8.09<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_29 \
+    expression="e- + H2 = 2H = e-" \
+    rate_coefficient_type=arrhenius \
+    a=1.697e-14 b=-0.0244 c=10.3318 energy_transfer=4.4<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_30 \
+    expression="e- + H2 = H2+ + 2e-" \
+    rate_coefficient_type=arrhenius \
+    a=1.329e-19 b=1.075 c=17.0272 energy_transfer=15.4<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_32 \
+    expression="e- + H = H+ + 2e-" \
+    rate_coefficient_type=arrhenius \
+    a=7.332e-18 b=0.6938 c=14.5972 energy_transfer=13.6<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_33 \
+    expression="F- + CHF2+ = F + CF2 + H" \
+    rate_coefficient_type=arrhenius \
+    a=4e-13 b=-0.5 c=0 energy_transfer=0<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_34 \
+    expression="F- + CHF+ = F + CF + H" \
+    rate_coefficient_type=arrhenius \
+    a=4e-13 b=-0.5 c=0 energy_transfer=0<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_35 \
+    expression="F- + H2+ = F + 2H" \
+    rate_coefficient_type=arrhenius \
+    a=4e-13 b=-0.5 c=0 energy_transfer=0<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_36 \
+    expression="e- + H2+ = 2H" \
+    rate_coefficient_type=arrhenius \
+    a=4e-14 b=0 c=0 energy_transfer=0<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_37 \
+    expression="e- + CHF2+ = H = CF2" \
+    rate_coefficient_type=arrhenius \
+    a=4e-14 b=0 c=0 energy_transfer=0<eV>
+
+add_bulk_reaction plasma_model=plasma name=9_38 \
+    expression="e- + CHF+ = H = CF" \
+    rate_coefficient_type=arrhenius \
+    a=4e-14 b=0 c=0 energy_transfer=0<eV>
 
 # TABLE 1 - CF4 Electron Collisions
 add_bulk_reaction plasma_model=plasma name=1_5 \
@@ -579,50 +759,101 @@ add_bulk_reaction plasma_model=plasma name=ar_ion \
 
 # Solve for species flux distributions in plasma
 define_reactor name=chamber plasma_model=plasma \
-    type=icp radius=12<cm> height=10<cm> \
-    power=500<W> pressure=10<mTorr> gas_temperature=400<K> \
-    rf_bias_frequency=13.6<MHz> rf_bias_power=20<W> \
-    inlet_gas_flow= {{CF4 20<sccm>} {Ar 5<sccm>}} 
+    type=icp radius=$CHAMBER_RADIUS_CM<cm> \
+    height=$CHAMBER_HEIGHT_CM<cm> power=$RF_POWER_W<W> \
+    rf_bias_frequency=13.6<MHz> rf_bias_power=$RF_POWER_W<W> \
+    pressure=$PRESSURE_MTORR<mTorr> \
+    gas_temperature=$GAS_TEMP_K<K> inlet_gas_flow=$GAS_FLOWS 
 define_bulk_solver name=bulk_solver bulk_model_type=global \
-    max_time=180<s> stationary_state_tolerance=1e-3 step_size=1e-4
+    max_time=$MAX_SOLVER_SEC<s> \
+    stationary_state_tolerance=$PLASMA_TOLERANCE \
+    step_size=$PLASMA_STEP_SIZE
 solve_reactor name=plasma_sol reactor=chamber bulk_solver=bulk_solver
 
-# Reactive species distributions to reaction model
-define_species_distribution type=plasma solution=plasma_sol name=F+ species=F+ 
-define_species_distribution type=plasma solution=plasma_sol name=F species=F
-define_species_distribution type=plasma solution=plasma_sol name=F- species=F-
+# Reactive and sputtering species distributions saved to reaction model
+define_species_distribution type=plasma solution=plasma_sol \
+    name=F+ species=F+ 
+define_species_distribution type=plasma solution=plasma_sol \
+    name=F species=F 
+define_species_distribution type=plasma solution=plasma_sol \
+    name=F- species=F- 
 define_species_distribution type=sum name=F_all species=F \
     distributions= {{F+ F+} {F F} {F- F-}}
-save species_distribution=F_all species=F file_type=text file=F_SD_PATH
 
-define_species_distribution type=plasma solution=plasma_sol name=CF+ species=CF+
-define_species_distribution type=plasma solution=plasma_sol name=CF  species=CF  
+define_species_distribution type=plasma solution=plasma_sol \
+    name=CF+ species=CF+ 
+define_species_distribution type=plasma solution=plasma_sol \
+    name=CF  species=CF  
 define_species_distribution type=sum name=CF_all species=CF \
     distributions= {{CF+ CF+} {CF CF}}
-save species_distribution=CF_all species=CF file_type=text file=CF_SD_PATH
 
-define_species_distribution type=plasma solution=plasma_sol name=CF2+ species=CF2+
-define_species_distribution type=plasma solution=plasma_sol name=CF2  species=CF2  
+define_species_distribution type=plasma solution=plasma_sol \
+    name=CF2+ species=CF2+ 
+define_species_distribution type=plasma solution=plasma_sol \
+    name=CF2  species=CF2  
 define_species_distribution type=sum name=CF2_all species=CF2 \
     distributions= {{CF2+ CF2+} {CF2 CF2}}
-save species_distribution=CF2_all species=CF2 file_type=text file=CF2_SD_PATH
 
-define_species_distribution type=plasma solution=plasma_sol name=CF3+ species=CF3+
-define_species_distribution type=plasma solution=plasma_sol name=CF3  species=CF3  
-define_species_distribution type=plasma solution=plasma_sol name=CF3- species=CF3- 
+define_species_distribution type=plasma solution=plasma_sol \
+    name=CF3+ species=CF3+ 
+define_species_distribution type=plasma solution=plasma_sol \
+    name=CF3  species=CF3  
+define_species_distribution type=plasma solution=plasma_sol \
+    name=CF3- species=CF3- 
 define_species_distribution type=sum name=CF3_all species=CF3 \
     distributions= {{CF3+ CF3+} {CF3 CF3} {CF3- CF3-}}
-save species_distribution=CF3_all species=CF3 file_type=text file=CF3_SD_PATH
 
-# Other species (sputtered)
-define_species_distribution type=plasma solution=plasma_sol name=F2+ species=F2+
-define_species_distribution type=plasma solution=plasma_sol name=F2 species=F2 
-define_species_distribution type=plasma solution=plasma_sol name=F2- species=F2-
-define_species_distribution type=plasma solution=plasma_sol name=C+ species=C+
-define_species_distribution type=plasma solution=plasma_sol name=C species=C 
-define_species_distribution type=plasma solution=plasma_sol name=Ar+ species=Ar+
-define_species_distribution type=plasma solution=plasma_sol name=Ar species=Ar  
-define_species_distribution type=plasma solution=plasma_sol name=CF4 species=CF4 
-define_species_distribution type=sum name=nonreactive species=X \
-    distributions= {{F2+ F2+} {F2 F2} {F2- F2-} {C+ C+} {C C} {Ar+ Ar+} {Ar Ar} {CF4 CF4}}
-save species_distribution=nonreactive species=X file_type=text file=NR_SD_PATH
+define_species_distribution type=plasma solution=plasma_sol \
+    name=CHF2+ species=CHF2+ 
+define_species_distribution type=plasma solution=plasma_sol \
+    name=CHF2  species=CHF2  
+define_species_distribution type=sum name=CHF2_all species=CHF2 \
+    distributions= {{CHF2+ CHF2+} {CHF2 CHF2}}
+
+define_species_distribution type=plasma solution=plasma_sol \
+    name=CHF+ species=CHF+ 
+define_species_distribution type=plasma solution=plasma_sol \
+    name=CHF  species=CHF  
+define_species_distribution type=sum name=CHF_all species=CHF \
+    distributions= {{CHF+ CHF+} {CHF CHF}}
+
+define_species_distribution type=plasma solution=plasma_sol \
+    name=H2+ species=H2+ 
+define_species_distribution type=plasma solution=plasma_sol \
+    name=H2  species=H2  
+define_species_distribution type=sum name=H2_all species=H2 \
+    distributions= {{H2+ H2+} {H2 H2}}
+
+define_species_distribution type=plasma solution=plasma_sol \
+    name=H+ species=H+ 
+define_species_distribution type=plasma solution=plasma_sol \
+    name=H  species=H  
+define_species_distribution type=sum name=H_all species=H \
+    distributions= {{H+ H+} {H H}}
+
+define_species_distribution type=plasma solution=plasma_sol \
+    name=Ar+ species=Ar+ 
+define_species_distribution type=plasma solution=plasma_sol \
+    name=Ar species=Ar  
+define_species_distribution type=sum name=Ar_all species=Ar \
+    distributions= {{Ar+ Ar+} {Ar Ar}}
+
+# Save species distributions
+save species_distribution=F_all \
+    species=F file_type=text file=$F_SD_PATH
+save species_distribution=CF_all \
+    species=CF file_type=text file=$CF_SD_PATH
+save species_distribution=CF2_all \
+    species=CF2 file_type=text file=$CF2_SD_PATH
+save species_distribution=CF3_all \
+    species=CF3 file_type=text file=$CF3_SD_PATH
+save species_distribution=Ar_all \
+    species=Ar file_type=text file=$AR_SD_PATH
+save species_distribution=CHF_all \
+    species=CHF file_type=text file=$CHF_SD_PATH
+save species_distribution=CHF2_all \
+    species=CHF2 file_type=text file=$CHF2_SD_PATH
+save species_distribution=H_all \
+    species=H file_type=text file=$H_SD_PATH
+save species_distribution=H2_all \
+    species=H2 file_type=text file=$H2_SD_PATH
