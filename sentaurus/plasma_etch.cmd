@@ -7,342 +7,233 @@
 # Etch settings
 set GRID_SIZE_UM 0.002
 set ETCH_INTERVAL_MIN 0.1
-set N_ETCH_INTERVALS 1
+set N_ETCH_INTERVALS 10
 set MASK_XSIZE_UM 0.1
 set MASK_YSIZE_UM 0.1
 set NEUTRALIZED_EV 1
+set MAX_EV 250
 
 # Input files
 set F_SD_PATH f_sd.txt
 set CF_SD_PATH cf_sd.txt
 set CF2_SD_PATH cf2_sd.txt
 set CF3_SD_PATH cf3_sd.txt
-set X_SD_PATH x_sd.txt
+set AR_SD_PATH ar_sd.txt
 set MASK_HOLE_PATH maskhole50nm.gds
 
-# Define reaction model and extract species distributions
-define_model name=etcher description="CF4/CHF3/Ar/O2 ICP/RIE Etch Model"
+# Extract species distributions
 define_species_distribution type=ead_file file=$F_SD_PATH \
-    name=F_all species=F
+    name=F_all species=F energy_min=0 energy_max=$MAX_EV
 define_species_distribution type=ead_file file=$CF_SD_PATH \
-    name=CF_all species=CF
+    name=CF_all species=CF energy_min=0 energy_max=$MAX_EV
 define_species_distribution type=ead_file file=$CF2_SD_PATH \
-    name=CF2_all species=CF2
+    name=CF2_all species=CF2 energy_min=0 energy_max=$MAX_EV
 define_species_distribution type=ead_file file=$CF3_SD_PATH \
-    name=CF3_all species=CF3
-define_species_distribution type=ead_file file=$X_SD_PATH \
-    name=X_all species=X
+    name=CF3_all species=CF3 energy_min=0 energy_max=$MAX_EV
+define_species_distribution type=ead_file file=$AR_SD_PATH \
+    name=Ar_all species=Ar energy_min=0 energy_max=$MAX_EV
 
-# Add species from both tables
-add_source_species model=etcher name=F
-add_source_species model=etcher name=CF
-add_source_species model=etcher name=CF2
-add_source_species model=etcher name=CF3
-add_source_species model=etcher name=X
-add_source_species model=etcher name=SiO2
-add_source_species model=etcher name=SiO2_F2
-add_source_species model=etcher name=SiO2_CF2
-
-# Add reactions from Table 4 sorted by reactant
-# F reflections, sputtering, & reactions
-add_reaction model=etcher name=F_SiO2_reflection \
-    expression="F<g> + SiO2<s> = F<r> + SiO2<s>"
-add_reaction model=etcher name=F_SiO2_F2_reflection \
-    expression="F<g> + SiO2_F2<s> = F<r> + SiO2_F2<s>"
-add_reaction model=etcher name=F_SiO2_CF2_reflection \
-    expression="F<g> + SiO2_CF2<s> = F<r> + SiO2_CF2<s>"
-add_reaction model=etcher name=F_SiO2_sputter \
-    expression="F<g> + SiO2<s> = SiO2<q>"
-add_reaction model=etcher name=F_SiO2_F2_sputter \
-    expression="F<g> + SiO2_F2<s> = SiO2_F2<q>"
-add_reaction model=etcher name=F_SiO2_CF2_sputter \
-    expression="F<g> + SiO2_CF2<s> = SiO2_CF2<q>"
-add_reaction model=etcher name=4_1 \
+# Define reaction models
+define_model name=etcher_f \
+    description="CF4/CHF3/Ar RIE Etch Model with F"
+add_source_species model=etcher_f name=F
+add_reaction model=etcher_f name=4_1_9_SiO2 \
     expression="F<g> + SiO2<s> = SiF4<v> + O2<v>"
-add_reaction model=etcher name=4_2 \
+add_reaction model=etcher_f name=4_2_42 \
     expression="F<g> + SiO2<s> = SiO2_F2<s>"
-add_reaction model=etcher name=4_9_SiO2 \
-    expression="F<g> + SiO2<s> = SiF4<v> + O2<v> + F<g>"
-add_reaction model=etcher name=4_9_SiO2_F2 \
-    expression="F<g> + SiO2_F2<s> = SiO2<s> + F<g>"
-add_reaction model=etcher name=4_20_SiO2 \
-    expression="F<g> + SiO2_CF2<s> = SiF4<v> + F<g>"
-add_reaction model=etcher name=4_20_SiO2_CF2 \
-    expression="F<g> + SiO2_CF2<s> = SiO2<s> + CO<v> + F<g>"
-add_reaction model=etcher name=4_31 \
-    expression="F<g> + SiO2<s> = F<g> + SiO2<s>"
-add_reaction model=etcher name=4_42 \
-    expression="F<g> + SiO2<s> = SiO2_F2<s>"
-add_reaction model=etcher name=4_46 \
+add_reaction model=etcher_f name=4_9_SiO2_F2 \
+    expression="F<g> + SiO2_F2<s> = SiO2<s>"
+add_reaction model=etcher_f name=4_20_SiO2 \
+    expression="F<g> + SiO2_CF2<s> = SiF4<v>"
+add_reaction model=etcher_f name=4_46_20_SiO2_CF2 \
     expression="F<g> + SiO2_CF2<s> = SiO2<s> + CF4<v>"
+finalize_model model=etcher_f
 
-# CF reflections, sputtering, & reactions
-add_reaction model=etcher name=CF_SiO2_reflection \
-    expression="CF<g> + SiO2<s> = CF<r> + SiO2<s>"
-add_reaction model=etcher name=CF_SiO2_F2_reflection \
-    expression="CF<g> + SiO2_F2<s> = CF<r> + SiO2_F2<s>"
-add_reaction model=etcher name=CF_SiO2_CF2_reflection \
-    expression="CF<g> + SiO2_CF2<s> = CF<r> + SiO2_CF2<s>"
-add_reaction model=etcher name=CF_SiO2_sputter \
-    expression="CF<g> + SiO2<s> = SiO2<q> + CF"
-add_reaction model=etcher name=CF_SiO2_F2_sputter \
-    expression="CF<g> + SiO2_F2<s> = SiO2_F2<q> + CF"
-add_reaction model=etcher name=CF_SiO2_CF2_sputter \
-    expression="CF<g> + SiO2_CF2<s> = SiO2_CF2<q> + CF"
-add_reaction model=etcher name=4_5_SiO2 \
+define_model name=etcher_cf \
+    description="CF4/CHF3/Ar RIE Etch Model with CF"
+add_source_species model=etcher_cf name=CF
+add_reaction model=etcher_cf name=4_5_SiO2 \
     expression="CF<g> + SiO2<s> = SiO2_CF2<s>"
-add_reaction model=etcher name=4_5_SiO2_F2 \
+add_reaction model=etcher_cf name=4_5_41_SiO2_F2 \
     expression="CF<g> + SiO2_F2<s> = SiO2_CF2<s>"
-add_reaction model=etcher name=4_8_SiO2 \
-    expression="CF<g> + SiO2<s> = SiF4<v> + O2<v> + CF<g>"
-add_reaction model=etcher name=4_8_SiO2_F2 \
-    expression="CF<g> + SiO2_F2<s> = SiO2<s> + CF<g>"
-add_reaction model=etcher name=4_19_SiO2 \
-    expression="CF<g> + SiO2<s> = SiF4<v> + CF<g>"
-add_reaction model=etcher name=4_19_SiO2_CF2 \
-    expression="CF<g> + SiO2_CF2<s> = SiO2<s> + CO<v> + CF<g>"
-add_reaction model=etcher name=4_30 \
-    expression="CF<g> + SiO2<s> = CF<g> + SiO2<s>"
-add_reaction model=etcher name=4_41_SiO2 \
+add_reaction model=etcher_cf name=4_8_19_SiO2 \
+    expression="CF<g> + SiO2<s> = SiF4<v>"
+add_reaction model=etcher_cf name=4_8_SiO2_F2 \
+    expression="CF<g> + SiO2_F2<s> = SiO2<s>"
+add_reaction model=etcher_cf name=4_19_SiO2_CF2 \
+    expression="CF<g> + SiO2_CF2<s> = SiO2<s>"
+add_reaction model=etcher_cf name=4_41_SiO2 \
     expression="CF<g> + SiO2<s> = SiO2_F2<s>"
-add_reaction model=etcher name=4_41_SiO2_F2 \
-    expression="CF<g> + SiO2_F2<s> = SiO2_CF2<s>"
+finalize_model model=etcher_cf 
 
-# CF2 reflections, sputtering, & reactions
-add_reaction model=etcher name=CF2_SiO2_reflection \
-    expression="CF2<g> + SiO2<s> = CF2<r> + SiO2<s>"
-add_reaction model=etcher name=CF2_SiO2_F2_reflection \
-    expression="CF2<g> + SiO2_F2<s> = CF2<r> + SiO2_F2<s>"
-add_reaction model=etcher name=CF2_SiO2_CF2_reflection \
-    expression="CF2<g> + SiO2_CF2<s> = CF2<r> + SiO2_CF2<s>"
-add_reaction model=etcher name=CF2_SiO2_sputter \
-    expression="CF2<g> + SiO2<s> = SiO2<q> + CF2"
-add_reaction model=etcher name=CF2_SiO2_F2_sputter \
-    expression="CF2<g> + SiO2_F2<s> = SiO2_F2<q> + CF2"
-add_reaction model=etcher name=CF2_SiO2_CF2_sputter \
-    expression="CF2<g> + SiO2_CF2<s> = SiO2_CF2<q> + CF2"
-add_reaction model=etcher name=4_3 \
+define_model name=etcher_cf2 \
+    description="CF4/CHF3/Ar RIE Etch Model with CF2"
+add_source_species model=etcher_cf2 name=CF2
+add_reaction model=etcher_cf2 name=4_3_40 \
     expression="CF2<g> + SiO2<s> = SiO2_CF2<s>"
-add_reaction model=etcher name=4_6_SiO2 \
-    expression="CF2<g> + SiO2<s> = SiF4<v> + O2<v> + CF2<g>"
-add_reaction model=etcher name=4_6_SiO2_F2 \
+add_reaction model=etcher_cf2 name=4_6_17_SiO2 \
+    expression="CF2<g> + SiO2<s> = SiF4<v>"
+add_reaction model=etcher_cf2 name=4_6_SiO2_F2 \
     expression="CF2<g> + SiO2_F2<s> = SiO2<s>"
-add_reaction model=etcher name=4_17_SiO2 \
-    expression="CF2<g> + SiO2<s> = SiF4<v> + CO<v> + CF2<g>"
-add_reaction model=etcher name=4_17_SiO2_CF2 \
+add_reaction model=etcher_cf2 name=4_17_SiO2_CF2 \
     expression="CF2<g> + SiO2_CF2<s> = SiO2<s>"
-add_reaction model=etcher name=4_29 \
-    expression="CF2<g> + SiO2<s> = CF2<g> + SiO2<s>"
-add_reaction model=etcher name=4_40 \
-    expression="CF2<g> + SiO2<s> = SiO2_CF2<s>"
+finalize_model model=etcher_cf2
 
-# CF3 reflections, sputtering, & reactions
-add_reaction model=etcher name=CF3_SiO2_reflection \
-    expression="CF3<g> + SiO2<s> = CF3<r> + SiO2<s>"
-add_reaction model=etcher name=CF3_SiO2_F2_reflection \
-    expression="CF3<g> + SiO2_F2<s> = CF3<r> + SiO2_F2<s>"
-add_reaction model=etcher name=CF3_SiO2_CF2_reflection \
-    expression="CF3<g> + SiO2_CF2<s> = CF3<r> + SiO2_CF2<s>"
-add_reaction model=etcher name=CF3_SiO2_sputter \
-    expression="CF3<g> + SiO2<s> = SiO2<q> + CF3"
-add_reaction model=etcher name=CF3_SiO2_F2_sputter \
-    expression="CF3<g> + SiO2_F2<s> = SiO2_F2<q> + CF3"
-add_reaction model=etcher name=CF3_SiO2_CF2_sputter \
-    expression="CF3<g> + SiO2_CF2<s> = SiO2_CF2<q> + CF3"
-add_reaction model=etcher name=4_4_SiO2_F2 \
+define_model name=etcher_cf3 \
+    description="CF4/CHF3/Ar RIE Etch Model with CF3"
+add_source_species model=etcher_cf3 name=CF3
+add_reaction model=etcher_cf3 name=4_4_39_SiO2_F2 \
     expression="CF3<g> + SiO2<s> = SiO2_F2<s>"
-add_reaction model=etcher name=4_4_SiO2_CF2 \
+add_reaction model=etcher_cf3 name=4_4_39_SiO2_CF2 \
     expression="CF3<g> + SiO2<s> = SiO2_CF2<s>"
-add_reaction model=etcher name=4_7_SiO2 \
-    expression="CF3<g> + SiO2<s> = SiF4<v> + O2<v> + CF3<g>"
-add_reaction model=etcher name=4_7_SiO2_F2 \
+add_reaction model=etcher_cf3 name=4_7_18_SiO2 \
+    expression="CF3<g> + SiO2<s> = SiF4<v>"
+add_reaction model=etcher_cf3 name=4_7_SiO2_F2 \
     expression="CF3<g> + SiO2_F2<s> = SiO2<s>"
-add_reaction model=etcher name=4_18_SiO2 \
-    expression="CF3<g> + SiO2<s> = SiF4<v> + CF3<g>"
-add_reaction model=etcher name=4_18_SiO2_CF2 \
-    expression="CF3<g> + SiO2_CF2<s> = SiO2<s> + CO<v>"
-add_reaction model=etcher name=4_28 \
-    expression="CF3<g> + SiO2<s> = CF3<g> + SiO2<s>"
-add_reaction model=etcher name=4_39_SiO2_F2 \
-    expression="CF3<g> + SiO2<s> = SiO2_F2<s>"
-add_reaction model=etcher name=4_39_SiO2_CF2 \
-    expression="CF3<g> + SiO2<s> = SiO2_CF2<s>"
+add_reaction model=etcher_cf3 name=4_18_SiO2_CF2 \
+    expression="CF3<g> + SiO2_CF2<s> = SiO2<s>"
+finalize_model model=etcher_cf3
 
-# Sputtering with non-reacting ions "X"
-add_reaction model=etcher name=X_SiO2_reflection \
-    expression="X<g> + SiO2<s> = X<r> + SiO2<s>"
-add_reaction model=etcher name=X_SiO2_F2_reflection \
-    expression="X<g> + SiO2_F2<s> = X<r> + SiO2_F2<s>"
-add_reaction model=etcher name=X_SiO2_CF2_reflection \
-    expression="X<g> + SiO2_CF2<s> = X<r> + SiO2_CF2<s>"
-add_reaction model=etcher name=sputter_SiO2 \
-    expression="SiO2<s> + X<g> = SiO2<q> + X<q>"
-add_reaction model=etcher name=sputter_SiO2_F2 \
-    expression="SiO2_F2<s> + X<g> = SiO2_F2<q> + X<q>"
-add_reaction model=etcher name=sputter_SiO2_CF2 \
-    expression="SiO2_CF2<s> + X<g> = SiO2_CF2<q> + X<q>"
-finalize_model model=etcher
+define_model name=etcher_ar \
+    description="CF4/CHF3/Ar RIE Etch with Ar"
+add_source_species model=etcher_ar name=Ar
+add_reaction model=etcher_ar name=Ar_SiO2_reflection \
+    expression="Ar<g> + SiO2<s> = Ar<r> + SiO2<s>"
+add_reaction model=etcher_ar name=Ar_SiO2_F2_reflection \
+    expression="Ar<g> + SiO2_F2<s> = Ar<r> + SiO2_F2<s>"
+add_reaction model=etcher_ar name=Ar_SiO2_CF2_reflection \
+    expression="Ar<g> + SiO2_CF2<s> = Ar<r> + SiO2_CF2<s>"
+add_reaction model=etcher_ar name=sputter_SiO2 \
+    expression="SiO2<s> + Ar<g> = SiO2<v>"
+add_reaction model=etcher_ar name=sputter_SiO2_F2 \
+    expression="SiO2_F2<s> + Ar<g> = SiO2_F2<v>"
+add_reaction model=etcher_ar name=sputter_SiO2_CF2 \
+    expression="SiO2_CF2<s> + Ar<g> = SiO2_CF2<v>"
+finalize_model model=etcher_ar
 
 # Define etch machines for each species distribution and reaction properties
-# Angle and energy dependent probabilities for reflection and sputtering
-define_probability name=p_reflection energy=0 \
-    expression="theta > M_PI/3 ? ((6 / M_PI) * theta - 2) : 0"
+# F reactions
+define_etch_machine model=etcher_f \
+    name=etch_f species_distribution=F_all
+define_probability name=prob_4_1_9_SiO2 \
+    expression="E > 4. ? 0.012288 : (E > 0.163 ? 0.003955 : 0)"
+define_probability name=prob_4_2_42 \
+    expression="E > 4. ? 0.11 : 0.01"
+define_probability name=prob_4_46_20_SiO2_CF2 \
+    expression="E > 4. ? 0.018667 : 0.008667"
+define_probability name=prob_4_20 \
+    expression="E > 4. ? 0.008667 : 0"
+define_probability name=prob_4_9_SiO2_F2 \
+    expression="E > 4. ? 0.008333 : 0"
+
+add_reaction_properties reaction=4_1_9_SiO2 \
+    machine=etch_f p=0.003955 
+add_reaction_properties reaction=4_2_42 \
+    machine=etch_f probability=prob_4_2_42
+add_reaction_properties reaction=4_9_SiO2_F2 \
+    machine=etch_f probability=prob_4_9_SiO2_F2
+add_reaction_properties reaction=4_20_SiO2 \
+    machine=etch_f probability=prob_4_20
+add_reaction_properties reaction=4_46_20_SiO2_CF2 \
+    machine=etch_f probability=prob_4_46_20_SiO2_CF2
+
+# CF reactions
+define_etch_machine model=etcher_cf \
+    name=etch_cf species_distribution=CF_all 
+define_probability name=prob_4_5_41_SiO2_F2 \
+    expression="E > 4. ? 0.383 : 0.333"
+define_probability name=prob_4_8_19_SiO2 \
+    expression="E > 4. ? 0.15367 : 0"
+define_probability name=prob_4_8_SiO2_F2 \
+    expression="E > 4. ? 0.01367 : 0"
+define_probability name=prob_4_19_SiO2_CF2 \
+    expression="E > 4. ? 0.14 : 0"
+define_probability name=prob_4_41_SiO2 \
+    expression="E > 4. ? 0.05 : 0"
+
+add_reaction_properties reaction=4_5_SiO2 \
+    machine=etch_cf p=0.333
+add_reaction_properties reaction=4_5_41_SiO2_F2 \
+    machine=etch_cf probability=prob_4_5_41_SiO2_F2
+add_reaction_properties reaction=4_8_19_SiO2 \
+    machine=etch_cf probability=prob_4_8_19_SiO2
+add_reaction_properties reaction=4_8_SiO2_F2 \
+    machine=etch_cf probability=prob_4_8_SiO2_F2
+add_reaction_properties reaction=4_19_SiO2_CF2 \
+    machine=etch_cf probability=prob_4_19_SiO2_CF2
+add_reaction_properties reaction=4_41_SiO2 \
+    machine=etch_cf probability=prob_4_41_SiO2
+
+# CF2 reactions
+define_etch_machine model=etcher_cf2 \
+    name=etch_cf2 species_distribution=CF2_all
+define_probability name=prob_4_3_40 \
+    expression="E > 4. ? 0.86 : 0.66"
+define_probability name=prob_4_6_17_SiO2 \
+    expression="E > 4. ? 0.02423 : 0"
+define_probability name=prob_4_6_SiO2_F2 \
+    expression="E > 4. ? 0.022 : 0"
+define_probability name=prob_4_17_SiO2_CF2 \
+    expression="E > 4. ? 0.00223 : 0"
+
+add_reaction_properties reaction=4_3_40 \
+    machine=etch_cf2 probability=prob_4_3_40
+add_reaction_properties reaction=4_6_17_SiO2 \
+    machine=etch_cf2 probability=prob_4_6_17_SiO2
+add_reaction_properties reaction=4_6_SiO2_F2 \
+    machine=etch_cf2 probability=prob_4_6_SiO2_F2
+add_reaction_properties reaction=4_17_SiO2_CF2 \
+    machine=etch_cf2 probability=prob_4_17_SiO2_CF2
+
+# CF3 reactions
+define_etch_machine model=etcher_cf3 \
+    name=etch_cf3 species_distribution=CF3_all
+define_probability name=prob_4_4_39 \
+    expression="E > 4. ? 0.1 : 0.05"
+define_probability name=prob_4_7_18_SiO2 \
+    expression="E > 4. ? 0.06167 : 0"
+define_probability name=prob_4_7_SiO2_F2 \
+    expression="E > 4. ? 0.03067 : 0"
+define_probability name=prob_4_18_SiO2_CF2 \
+    expression="E > 4. ? 0.031 : 0"
+
+add_reaction_properties reaction=4_4_39_SiO2_F2 \
+    machine=etch_cf3 probability=prob_4_4_39
+add_reaction_properties reaction=4_4_39_SiO2_CF2 \
+    machine=etch_cf3 probability=prob_4_4_39
+add_reaction_properties reaction=4_7_18_SiO2 \
+    machine=etch_cf3 probability=prob_4_7_18_SiO2
+add_reaction_properties reaction=4_7_SiO2_F2 \
+    machine=etch_cf3 probability=prob_4_7_SiO2_F2
+add_reaction_properties reaction=4_18_SiO2_CF2 \
+    machine=etch_cf3 probability=prob_4_18_SiO2_CF2
+
+# Ar reflections and sputtering
+define_etch_machine model=etcher_ar \
+    name=etch_ar species_distribution=Ar_all
+define_probability name=p_reflection \
+    expression="(theta > M_PI / 3.) ? 3.6 * \
+    pow(theta - M_PI / 3., 2.) : 0"
 define_probability name=p_sputter \
-    expression="(0.0003666 * energy - 0.0183333) * pow(cos(theta), -2.08) * exp(0.37 * (1 - (1 / cos(theta))))"
+    expression="E > 50 ? (0.0003667 * E - 0.0183333) \
+    * pow(cos(theta), -2.08) * exp(0.37 - (0.37 / cos(theta))) : 0"
+define_probability name=p_sputter_polymer \
+    expression="E > 65 ? (0.0003667 * E - 0.0183333) \
+    * pow(cos(theta), -2.08) * exp(0.37 - (0.37 / cos(theta))) : 0"
 
-# F reflections, sputtering, & reactions
-define_etch_machine model=etcher name=etch_f species_distribution=F_all
-add_reaction_properties machine=etch_f \
-    reaction=F_SiO2_reflection probability=p_reflection
-add_reaction_properties machine=etch_f \
-    reaction=F_SiO2_F2_reflection probability=p_reflection
-add_reaction_properties machine=etch_f \
-    reaction=F_SiO2_CF2 probability=p_reflection
+add_reaction_properties machine=etch_ar \
+    reaction=Ar_SiO2_reflection probability=p_reflection
+add_reaction_properties machine=etch_ar \
+    reaction=Ar_SiO2_F2_reflection probability=p_reflection
+add_reaction_properties machine=etch_ar \
+    reaction=Ar_SiO2_CF2_reflection probability=p_reflection
 
-add_reaction_properties machine=etch_f probability=p_sputter \
-    reaction=F_SiO2_sputter energy_threshold=50<eV>
-add_reaction_properties machine=etch_f probability=p_sputter \
-    reaction=F_SiO2_F2_sputter energy_threshold=65<eV>
-add_reaction_properties machine=etch_f probability=p_sputter \
-    reaction=F_SiO2_CF2_sputter energy_threshold=65<eV>
-
-add_reaction_properties reaction=4_1 machine=etch_f \
-    activation_energy=0.163<eV> p=3.955e-3
-add_reaction_properties reaction=4_2 machine=etch_f p=0.01
-add_reaction_properties reaction=4_9_SiO2 machine=etch_f p=8.333e-3 \
-    energy_exponent=0.5 energy_threshold=4<eV> energy_reference=9<eV> \
-    product_energy_max=$NEUTRALIZED_EV
-add_reaction_properties reaction=4_9_SiO2_F2 machine=etch_f p=8.333e-3 \
-    energy_exponent=0.5 energy_threshold=4<eV> energy_reference=9<eV> 
-add_reaction_properties reaction=4_20_SiO2 machine=etch_f p=8.667e-3 \
-    energy_exponent=0.5 energy_threshold=4<eV> energy_reference=9<eV> \
-    product_energy_max=$NEUTRALIZED_EV
-add_reaction_properties reaction=4_20_SiO2_CF2 machine=etch_f p=8.667e-3 \
-    energy_exponent=0.5 energy_threshold=4<eV> energy_reference=9<eV> 
-add_reaction_properties reaction=4_31 machine=etch_f \
-    p=0.8 energy_threshold=4<eV> product_energy_max=$NEUTRALIZED_EV
-add_reaction_properties reaction=4_42 machine=etch_f \
-    p=0.1 energy_threshold=4<eV> product_energy_max=$NEUTRALIZED_EV
-add_reaction_properties reaction=4_42 machine=etch_f \
-    p=5e-3 energy_threshold=4<eV>
-
-# CF reflections, sputtering, & reactions
-define_etch_machine model=etcher name=etch_cf species_distribution=CF_all
-add_reaction_properties machine=etch_cf \
-    reaction=CF_SiO2_reflection probability=p_reflection
-add_reaction_properties machine=etch_cf \
-    reaction=CF_SiO2_F2_reflection probability=p_reflection
-add_reaction_properties machine=etch_cf \
-    reaction=CF_SiO2_CF2 probability=p_reflection
-
-add_reaction_properties machine=etch_cf probability=p_sputter \
-    reaction=CF_SiO2_sputter energy_threshold=50<eV>
-add_reaction_properties machine=etch_cf probability=p_sputter \
-    reaction=CF_SiO2_F2_sputter energy_threshold=65<eV>
-add_reaction_properties machine=etch_cf probability=p_sputter \
-    reaction=CF_SiO2_CF2_sputter energy_threshold=65<eV>
-
-add_reaction_properties reaction=4_5_SiO2 machine=etch_cf p=0.333
-add_reaction_properties reaction=4_5_SiO2_F2 machine=etch_cf p=0.333
-add_reaction_properties reaction=4_8_SiO2 machine=etch_cf p=1.367e-2 \
-    energy_exponent=0.5 energy_threshold=4<eV> energy_reference=9<eV> \
-    product_energy_max=$NEUTRALIZED_EV
-add_reaction_properties reaction=4_8_SiO2_F2 machine=etch_cf p=1.367e-2 \
-    energy_exponent=0.5 energy_threshold=4<eV> energy_reference=9<eV> 
-add_reaction_properties reaction=4_19_SiO2 machine=etch_cf p=0.14 \
-    energy_exponent=0.5 energy_threshold=4<eV> energy_reference=9<eV> \
-    product_energy_max=$NEUTRALIZED_EV
-add_reaction_properties reaction=4_19_SiO2_CF2 machine=etch_cf p=0.14 \
-    energy_exponent=0.5 energy_threshold=4<eV> energy_reference=9<eV> 
-add_reaction_properties reaction=4_30 machine=etch_cf \
-    p=0.8 energy_threshold=4<eV> product_energy_max=$NEUTRALIZED_EV
-add_reaction_properties reaction=4_41_SiO2 machine=etch_cf \
-    p=0.05 energy_threshold=4<eV> 
-add_reaction_properties reaction=4_41_SiO2_F2 machine=etch_cf \
-    p=0.05 energy_threshold=4<eV>
-
-# CF2 reflections, sputtering, & reactions
-define_etch_machine model=etcher name=etch_cf2 species_distribution=CF2_all
-add_reaction_properties machine=etch_cf2 \
-    reaction=CF2_SiO2_reflection probability=p_reflection
-add_reaction_properties machine=etch_cf2 \
-    reaction=CF2_SiO2_F2_reflection probability=p_reflection
-add_reaction_properties machine=etch_cf2 \
-    reaction=CF2_SiO2_CF2 probability=p_reflection
-
-add_reaction_properties machine=etch_cf2 probability=p_sputter \
-    reaction=CF2_SiO2_sputter energy_threshold=50<eV>
-add_reaction_properties machine=etch_cf2 probability=p_sputter \
-    reaction=CF2_SiO2_F2_sputter energy_threshold=65<eV>
-add_reaction_properties machine=etch_cf2 probability=p_sputter \
-    reaction=CF2_SiO2_CF2_sputter energy_threshold=65<eV>
-
-add_reaction_properties reaction=4_3 machine=etch_cf2 p=0.66
-add_reaction_properties reaction=4_6_SiO2 machine=etch_cf2 p=0.022 \
-    energy_exponent=0.5 energy_threshold=4<eV> energy_reference=9<eV> \
-    product_energy_max=$NEUTRALIZED_EV
-add_reaction_properties reaction=4_6_SiO2_F2 machine=etch_cf2 p=0.022 \
-    energy_exponent=0.5 energy_threshold=4<eV> energy_reference=9<eV> 
-add_reaction_properties reaction=4_17_SiO2 machine=etch_cf2 p=2.23e-3 \
-    energy_exponent=0.5 energy_threshold=4<eV> energy_reference=9<eV> \
-    product_energy_max=$NEUTRALIZED_EV
-add_reaction_properties reaction=4_17_SiO2_CF2 machine=etch_cf2 p=2.23e-3 \
-    energy_exponent=0.5 energy_threshold=4<eV> energy_reference=9<eV> 
-add_reaction_properties reaction=4_29 machine=etch_cf2 \
-    p=0.8 energy_threshold=4<eV> product_energy_max=$NEUTRALIZED_EV
-add_reaction_properties reaction=4_40 machine=etch_cf2 \
-    p=0.2 energy_threshold=4<eV>
-
-# CF3 reflections, sputtering, & reactions
-define_etch_machine model=etcher name=etch_cf3 species_distribution=CF3_all
-add_reaction_properties machine=etch_cf3 \
-    reaction=CF3_SiO2_reflection probability=p_reflection
-add_reaction_properties machine=etch_cf3 \
-    reaction=CF3_SiO2_F2_reflection probability=p_reflection
-add_reaction_properties machine=etch_cf3 \
-    reaction=CF3_SiO2_CF2 probability=p_reflection
-
-add_reaction_properties machine=etch_cf3 probability=p_sputter \
-    reaction=CF3_SiO2_sputter energy_threshold=50<eV>
-add_reaction_properties machine=etch_cf3 probability=p_sputter \
-    reaction=CF3_SiO2_F2_sputter energy_threshold=65<eV>
-add_reaction_properties machine=etch_cf3 probability=p_sputter \
-    reaction=CF3_SiO2_CF2_sputter energy_threshold=65<eV>
-
-add_reaction_properties reaction=4_4_SiO2 machine=etch_cf3 p=0.05
-add_reaction_properties reaction=4_4_SiO2_F2 machine=etch_cf3 p=0.05
-add_reaction_properties reaction=4_7_SiO2 machine=etch_cf3 p=3.067e-2 \
-    energy_exponent=0.5 energy_threshold=4<eV> energy_reference=9<eV> \
-    product_energy_max=$NEUTRALIZED_EV
-add_reaction_properties reaction=4_7_SiO2_F2 machine=etch_cf3 p=3.067e-2 \
-    energy_exponent=0.5 energy_threshold=4<eV> energy_reference=9<eV> 
-add_reaction_properties reaction=4_18_SiO2 machine=etch_cf3 p=0.031 \
-    energy_exponent=0.5 energy_threshold=4<eV> energy_reference=9<eV> \
-    product_energy_max=$NEUTRALIZED_EV
-add_reaction_properties reaction=4_18_SiO2_CF2 machine=etch_cf3 p=0.031 \
-    energy_exponent=0.5 energy_threshold=4<eV> energy_reference=9<eV> 
-add_reaction_properties reaction=4_28 machine=etch_cf3 \
-    p=0.8 energy_threshold=4<eV> product_energy_max=$NEUTRALIZED_EV
-add_reaction_properties reaction=4_39_SiO2_F2 machine=etch_cf3 \
-    p=0.05 energy_threshold=4<eV>
-add_reaction_properties reaction=4_39_SiO2_CF2 machine=etch_cf3 \
-    p=0.05 energy_threshold=4<eV>
-
-# Nonreactive ion reflections and sputtering
-define_etch_machine model=etcher name=etch_x
-add_reaction_properties machine=etch_x \
-    reaction=X_SiO2_reflection probability=p_reflection
-add_reaction_properties machine=etch_x \
-    reaction=X_SiO2_F2_reflection probability=p_reflection
-add_reaction_properties machine=etch_x \
-    reaction=X_SiO2_CF2 probability=p_reflection
-
-add_reaction_properties machine=etch_x probability=p_sputter \
-    reaction=sputter_SiO2 machine=etch_x energy_threshold=18<eV>
-add_reaction_properties machine=etch_x probability=p_sputter \
-    reaction=sputter_SiO2_F2 energy_threshold=65<eV>
-add_reaction_properties machine=etch_x probability=p_sputter \
-    reaction=sputter_SiO2_CF2 energy_threshold=65<eV>
+add_reaction_properties machine=etch_ar \
+    probability=p_sputter reaction=sputter_SiO2
+add_reaction_properties machine=etch_ar \
+    probability=p_sputter_polymer reaction=sputter_SiO2_F2 
+add_reaction_properties machine=etch_ar \
+    probability=p_sputter_polymer reaction=sputter_SiO2_CF2
 
 # Create structure to etch
 define_structure material=Pt point_min={0 0 0} \
@@ -367,15 +258,15 @@ save
 
 # Etch hole over time intervals using each source species
 for {set i 0} {$i < $N_ETCH_INTERVALS} {incr i} {
+    etch machine=etch_ar method=pmc time=$ETCH_INTERVAL_MIN \
+        spacing= [list "$GRID_SIZE_UM" "$GRID_SIZE_UM" "$GRID_SIZE_UM"] 
     etch machine=etch_f method=pmc time=$ETCH_INTERVAL_MIN \
-        spacing= {$GRID_SIZE_UM $GRID_SIZE_UM $GRID_SIZE_UM} 
+        spacing= [list "$GRID_SIZE_UM" "$GRID_SIZE_UM" "$GRID_SIZE_UM"] 
     etch machine=etch_cf method=pmc time=$ETCH_INTERVAL_MIN \
-        spacing= {$GRID_SIZE_UM $GRID_SIZE_UM $GRID_SIZE_UM} 
+        spacing= [list "$GRID_SIZE_UM" "$GRID_SIZE_UM" "$GRID_SIZE_UM"] 
     etch machine=etch_cf2 method=pmc time=$ETCH_INTERVAL_MIN \
-        spacing= {$GRID_SIZE_UM $GRID_SIZE_UM $GRID_SIZE_UM} 
+        spacing= [list "$GRID_SIZE_UM" "$GRID_SIZE_UM" "$GRID_SIZE_UM"] 
     etch machine=etch_cf3 method=pmc time=$ETCH_INTERVAL_MIN \
-        spacing= {$GRID_SIZE_UM $GRID_SIZE_UM $GRID_SIZE_UM} 
-    etch machine=etch_x method=pmc time=$ETCH_INTERVAL_MIN \
-        spacing= {$GRID_SIZE_UM $GRID_SIZE_UM $GRID_SIZE_UM} 
+        spacing= [list "$GRID_SIZE_UM" "$GRID_SIZE_UM" "$GRID_SIZE_UM"] 
 }
 save
