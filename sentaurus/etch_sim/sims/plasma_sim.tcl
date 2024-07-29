@@ -1,30 +1,61 @@
 # Plasma model for CF4/CHF3/Ar ICP/RIE etch
 
 # Options for saving species distributions
-set SAVE_DISTRIBUTIONS = false
-set F_SD_PATH ../output_files/f_sd.txt
-set CF_SD_PATH ../output_files/cf_sd.txt
-set CF2_SD_PATH ../output_files/cf2_sd.txt
-set CF3_SD_PATH ../output_files/cf3_sd.txt
-set CHF_SD_PATH ../output_files/chf_sd.txt
-set CHF2_SD_PATH ../output_files/chf2_sd.txt
-set H_SD_PATH ../output_files/h_sd.txt
-set H2_SD_PATH ../output_files/h2_sd.txt
-set AR_SD_PATH ../output_files/ar_sd.txt
+set SAVE_DISTRIBUTIONS false
+set F_SD_PATH output_files/f_sd.txt
+set CF_SD_PATH output_files/cf_sd.txt
+set CF2_SD_PATH output_files/cf2_sd.txt
+set CF3_SD_PATH output_files/cf3_sd.txt
+set CHF_SD_PATH output_files/chf_sd.txt
+set CHF2_SD_PATH output_files/chf2_sd.txt
+set H_SD_PATH output_files/h_sd.txt
+set H2_SD_PATH output_files/h2_sd.txt
+set AR_SD_PATH output_files/ar_sd.txt
 
 # Define plasma model
 define_plasma_model name=plasma \
     bulk_model_type=global sheath_model_type=circuit
 
 # Add bulk reactions
-if ($CF4_SCCM > 0 || $CHF3_SCCM > 0) {
-    source ../gas_reactions/cf4.tcl
+if {$CF4_SCCM > 0 || $CHF3_SCCM > 0} {
+    add_species plasma_model=plasma name=CF4   mass=88.003<amu>  charge=0
+    add_species plasma_model=plasma name=F2+   mass=37.996<amu>  charge=+1
+    add_species plasma_model=plasma name=F2    mass=37.996<amu>  charge=0
+    add_species plasma_model=plasma name=F2-   mass=37.996<amu>  charge=-1
+    add_species plasma_model=plasma name=C+    mass=12.011<amu>  charge=+1
+    add_species plasma_model=plasma name=C     mass=12.011<amu>  charge=0
+    add_species plasma_model=plasma name=CF3+  mass=69.005<amu> charge=+1
+    add_species plasma_model=plasma name=CF3   mass=69.005<amu> charge=0
+    add_species plasma_model=plasma name=CF3-  mass=69.005<amu> charge=-1
+    add_species plasma_model=plasma name=CF2+  mass=50.007<amu> charge=+1
+    add_species plasma_model=plasma name=CF2   mass=50.007<amu> charge=0
+    add_species plasma_model=plasma name=CF+   mass=31.009<amu> charge=+1
+    add_species plasma_model=plasma name=CF    mass=31.009<amu> charge=0 
+    add_species plasma_model=plasma name=F+    mass=18.998<amu> charge=+1
+    add_species plasma_model=plasma name=F     mass=18.998<amu> charge=0
+    add_species plasma_model=plasma name=F-    mass=18.998<amu> charge=-1
+    lappend GAS_FLOWS [list "CF4 $CF4_SCCM<sccm>"]
+    source gas_reactions/cf4.tcl
 }
-if ($CHF3_SCCM > 0) {
-    source ../gas_reactions/chf3.tcl
+if {$CHF3_SCCM > 0} {
+    add_species plasma_model=plasma name=CHF3  mass=70.0128<amu>  charge=0
+    add_species plasma_model=plasma name=CHF2+ mass=51.0148<amu>  charge=+1
+    add_species plasma_model=plasma name=CHF2  mass=51.0148<amu>  charge=0
+    add_species plasma_model=plasma name=CHF+  mass=32.0168<amu>  charge=+1
+    add_species plasma_model=plasma name=CHF   mass=32.0168<amu>  charge=0
+    add_species plasma_model=plasma name=HF    mass=20.0058<amu>  charge=0
+    add_species plasma_model=plasma name=H2+   mass=2.0156<amu>   charge=+1
+    add_species plasma_model=plasma name=H2    mass=2.0156<amu>   charge=0
+    add_species plasma_model=plasma name=H+    mass=1.0078<amu>   charge=+1
+    add_species plasma_model=plasma name=H     mass=1.0078<amu>   charge=0
+    lappend GAS_FLOWS [list "CHF3 $CHF3_SCCM<sccm>"]
+    source gas_reactions/chf3.tcl
 }
-if ($AR_SCCM > 0) {
-    source ../gas_reactions/ar.tcl
+if {$AR_SCCM > 0} {
+    add_species plasma_model=plasma name=Ar    mass=39.948<amu> charge=0
+    add_species plasma_model=plasma name=Ar+   mass=39.948<amu> charge=+1
+    lappend GAS_FLOWS [list "Ar $AR_SCCM<sccm>"]
+    source gas_reactions/ar.tcl
 }
 
 # Solve for species flux distributions in plasma
@@ -41,7 +72,7 @@ define_bulk_solver name=bulk_solver bulk_model_type=global \
 solve_reactor name=plasma_sol reactor=chamber bulk_solver=bulk_solver
 
 # Get angle and energy distributions for each species
-if ($CF4_SCCM > 0 || $CHF3_SCCM > 0) {
+if {$CF4_SCCM > 0 || $CHF3_SCCM > 0} {
     define_species_distribution type=plasma solution=plasma_sol \
         name=F+ species=F+ 
     define_species_distribution type=plasma solution=plasma_sol \
@@ -74,7 +105,7 @@ if ($CF4_SCCM > 0 || $CHF3_SCCM > 0) {
     define_species_distribution type=sum name=CF3_all species=CF3 \
         distributions= {{CF3+ CF3+} {CF3 CF3} {CF3- CF3-}}
     
-    if ($SAVE_DISTRIBUTIONS){
+    if {$SAVE_DISTRIBUTIONS} {
         save species_distribution=F_all \
             species=F file_type=text file=$F_SD_PATH
         save species_distribution=CF_all \
@@ -85,7 +116,7 @@ if ($CF4_SCCM > 0 || $CHF3_SCCM > 0) {
             species=CF3 file_type=text file=$CF3_SD_PATH
     }
 }
-if ($CHF3_SCCM > 0) {
+if {$CHF3_SCCM > 0} {
     define_species_distribution type=plasma solution=plasma_sol \
         name=CHF2+ species=CHF2+ 
     define_species_distribution type=plasma solution=plasma_sol \
@@ -114,7 +145,7 @@ if ($CHF3_SCCM > 0) {
     define_species_distribution type=sum name=H_all species=H \
         distributions= {{H+ H+} {H H}}
 
-    if ($SAVE_DISTRIBUTIONS){
+    if {$SAVE_DISTRIBUTIONS} {
         save species_distribution=CHF_all \
             species=CHF file_type=text file=$CHF_SD_PATH
         save species_distribution=CHF2_all \
@@ -125,7 +156,7 @@ if ($CHF3_SCCM > 0) {
             species=H2 file_type=text file=$H2_SD_PATH
     }
 }
-if ($AR_SCCM > 0) {
+if {$AR_SCCM > 0} {
     define_species_distribution type=plasma solution=plasma_sol \
         name=Ar+ species=Ar+ 
     define_species_distribution type=plasma solution=plasma_sol \
@@ -133,7 +164,7 @@ if ($AR_SCCM > 0) {
     define_species_distribution type=sum name=Ar_all species=Ar \
         distributions= {{Ar+ Ar+} {Ar Ar}}
 
-    if ($SAVE_DISTRIBUTIONS){
+    if {$SAVE_DISTRIBUTIONS} {
         save species_distribution=Ar_all \
             species=Ar file_type=text file=$AR_SD_PATH
     }
