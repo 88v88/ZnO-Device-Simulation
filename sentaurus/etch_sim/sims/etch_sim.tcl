@@ -46,7 +46,7 @@ if {$AR_SCCM > 0} {
     source surface_reactions/ar.tcl
 }
 
-if {$IMPORT_STRUCUTRE} {
+if {$IMPORT_STRUCTURE} {
     define_structure file=$STRUCTURE_PATH tdr_geometry="$STRUCTURE_GEOMETRY"
 } else {
     # Create substrate layer
