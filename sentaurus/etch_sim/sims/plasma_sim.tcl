@@ -1,7 +1,6 @@
 # Plasma model for CF4/CHF3/Ar ICP/RIE etch
 
 # Options for saving species distributions
-set SAVE_DISTRIBUTIONS false
 set F_SD_PATH output_files/f_sd.txt
 set CF_SD_PATH output_files/cf_sd.txt
 set CF2_SD_PATH output_files/cf2_sd.txt

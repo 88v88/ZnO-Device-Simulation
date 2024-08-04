@@ -1,8 +1,6 @@
 # Etch SiO2 using reaction model 
 
 # Options for loading species distributions from file
-set DISTRIBUTIONS_FROM_FILE false
-set SAVE_INTERMEDIATE false
 set F_SD_PATH output_files/f_sd.txt
 set CF_SD_PATH output_files/cf_sd.txt
 set CF2_SD_PATH output_files/cf2_sd.txt
@@ -48,27 +46,30 @@ if {$AR_SCCM > 0} {
     source surface_reactions/ar.tcl
 }
 
+if {$IMPORT_STRUCUTRE} {
+    define_structure file=$STRUCTURE_PATH tdr_geometry="$STRUCTURE_GEOMETRY"
+} else {
+    # Create substrate layer
+    define_structure material=Pt point_min={0 0 0} \
+        point_max={$MASK_XSIZE_UM $MASK_YSIZE_UM 0.1}
 
-# Create substrate layer
-define_structure material=Pt point_min={0 0 0} \
-    point_max={$MASK_XSIZE_UM $MASK_YSIZE_UM 0.1}
+    # Deposit SiO2
+    define_deposit_machine anisotropy=0.8 curvature=0 \
+        material=SiO2 model=simple rate=1
+    deposit spacing=0.1 time=$SIO2_UM
 
-# Deposit SiO2
-define_deposit_machine anisotropy=0.8 curvature=0 \
-    material=SiO2 model=simple rate=1
-deposit spacing=0.1 time=$SIO2_UM
+    # Ideal hardmask
+    define_layout name=maskholelayout cell=TOP \
+        layout_file=$MASK_HOLE_PATH scale=1 domain_min= {0 0} \
+        domain_max= {$MASK_XSIZE_UM $MASK_YSIZE_UM} \
+        layer_names= {maskhole} layer_numbers= {1:0} \
+        shift_to_origin=false
+    define_mask name=mask1 layout=maskholelayout \
+        domain=SIM3D layer=maskhole
+    pattern mask=mask1 material=Ruthenium accuracy=0.001 \
+        thickness=$MASK_THICKNESS type=dark_positive
+}
 
-# Ideal hardmask
-define_layout name=maskholelayout cell=TOP \
-    layout_file=$MASK_HOLE_PATH scale=1 domain_min= {0 0} \
-    domain_max= {$MASK_XSIZE_UM $MASK_YSIZE_UM} \
-    layer_names= {maskhole} layer_numbers= {1:0} \
-    shift_to_origin=false
-define_mask name=mask1 layout=maskholelayout \
-    domain=SIM3D layer=maskhole
-pattern mask=mask1 material=Resist accuracy=0.001 \
-    thickness=0.1 type=dark_positive
-save file="$OUTPUT_PATH"
 
 # Etch hole over time intervals using each source species
 for {set i 0} {$i < $N_ETCH_INTERVALS} {incr i} {
