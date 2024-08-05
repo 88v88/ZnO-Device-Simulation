@@ -14,22 +14,22 @@ Example: `$ ssh -X andrew@ece007.ece.local.cmu.edu`
 `/afs/andrew.cmu.edu/usr20/andrew/my_projects`
 
 ## Running Sentaurus Remotely
-1. Sentaurus simulations may take hours and can be run while logged out of SSH using tmux. To create a tmux session:
-`$ tmux new -s my_session`
-Or to create a default tmux session with number 0, simply:
-`$ tmux`
-3. You are now inside the tmux session, run Sentaurus, for example, `sptopo3d` then kill the process with `Ctrl+C`:
-`$ sptopo3d`
-`$ ^C`
-4. Create new Andrew File System (AFS) tokens that will not be destroyed when logged out, allowing Sentaurus to access your script remotely. To do so, enter your password in `kinit` then `aklog`. 
-`$ kinit`
-`$ aklog`
-5. Navigate to and run your script. Use multithreading to make some simulation steps faster.
-`$ sptopo3d --threads 24 my_script.tcl`
-6. To detach from the session, type `Ctrl^B` then `d`. You can log out while the tmux session continues to run Sentaurus.
-8. When you log back into the machine to check on your simulation, attach to your tmux session:
-`$ tmux attach -t my_session`
-9. If you want to kill your tmux session, type `Ctrl^B`, then `:`, then `kill-session`.
+1. Sentaurus simulations may take hours and can be run while logged out of SSH using tmux. To create a tmux session:  
+`$ tmux new -s my_session`  
+Or to create a default tmux session with number 0, simply:  
+`$ tmux`  
+3. You are now inside the tmux session, run Sentaurus, for example, `sptopo3d` then kill the process with `Ctrl+C`:  
+`$ sptopo3d`  
+`$ ^C`  
+4. Create new Andrew File System (AFS) tokens that will not be destroyed when logged out, allowing Sentaurus to access your script remotely. To do so, enter your password in `kinit` then `aklog`.   
+`$ kinit`  
+`$ aklog`  
+5. Navigate to and run your script. Use multithreading to make some simulation steps faster.  
+`$ sptopo3d --threads 24 my_script.tcl`  
+6. To detach from the session, type `Ctrl^B` then `d`. You can log out while the tmux session continues to run Sentaurus.  
+8. When you log back into the machine to check on your simulation, attach to your tmux session:  
+`$ tmux attach -t my_session`  
+9. If you want to kill your tmux session, type `Ctrl^B`, then `:`, then `kill-session`.  
 
 ## Sentaurus Workbench
 1. Run `swb` in your project directory:
